@@ -1,0 +1,15 @@
+{
+	"item.syp.pet_bandage": "Bandage pour animaux de compagnie",
+	"item.syp.golden_pet_bandage": "Bandage doré pour animaux de compagnie",
+	"advancements.husbandry.syp.save_pet.title": "Sauveur de compagnie",
+	"advancements.husbandry.syp.save_pet.description": "Sauver un animal de compagnie de la mort",
+	"advancements.husbandry.syp.save_all_pets.title": "Médecin animalier",
+	"advancements.husbandry.syp.save_all_pets.description": "Sauvez tous les types d'animaux de la mort!",
+	"syp.pet_dying.wolf": "Votre loup de compagnie est en train de mourir!",
+	"syp.pet_dying.cat": "Votre chat est en train de mourir!",
+	"syp.pet_dying.horse": "Votre cheval de compagnie est en train de mourir!",
+	"syp.pet_dying.donkey": "Votre âne de compagnie est en train de mourir!",
+	"syp.pet_dying.mule": "Votre mule est en train de mourir!",
+	"syp.pet_dying.llama": "Votre lama de compagnie est en train de mourir!",
+	"syp.pet_dying.parrot": "Votre perroquet est en train de mourir!"
+}

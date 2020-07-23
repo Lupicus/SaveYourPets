@@ -1,0 +1,11 @@
+{
+	"MobEntity": "asm/MobEntity.js",
+	"HorseInventoryContainer": "asm/HorseInventoryContainer.js",
+	"WolfEntity": "asm/WolfEntity.js",
+	"CatEntity": "asm/CatEntity.js",
+	"HorseEntity": "asm/HorseEntity.js",
+	"DonkeyEntity": "asm/DonkeyEntity.js",
+	"MuleEntity": "asm/MuleEntity.js",
+	"LlamaEntity": "asm/LlamaEntity.js",
+	"ParrotEntity": "asm/ParrotEntity.js"
+}

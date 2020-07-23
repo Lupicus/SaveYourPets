@@ -1,0 +1,15 @@
+{
+	"item.syp.pet_bandage": "Бинт для животных",
+	"item.syp.golden_pet_bandage": "Золотой бинт для домашних животных",
+	"advancements.husbandry.syp.save_pet.title": "Спаситель домашних животных",
+	"advancements.husbandry.syp.save_pet.description": "Спасите питомца от смерти",
+	"advancements.husbandry.syp.save_all_pets.title": "Доктор домашних животных",
+	"advancements.husbandry.syp.save_all_pets.description": "Спасите всех видов животных от смерти!",
+	"syp.pet_dying.wolf": "Ваш любимый волк умирает!",
+	"syp.pet_dying.cat": "Ваш любимый кот умирает!",
+	"syp.pet_dying.horse": "Ваш любимый конь умирает!",
+	"syp.pet_dying.donkey": "Ваш домашний осел умирает!",
+	"syp.pet_dying.mule": "Ваш любимый мул умирает!",
+	"syp.pet_dying.llama": "Ваш любимый лама умирает!",
+	"syp.pet_dying.parrot": "Ваш любимый попугай умирает!"
+}

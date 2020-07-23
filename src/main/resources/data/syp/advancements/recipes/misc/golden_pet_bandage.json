@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "syp:golden_pet_bandage"
+    ]
+  },
+  "criteria": {
+    "has_bandage": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "syp:pet_bandage"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "syp:golden_pet_bandage"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_bandage",
+      "has_the_recipe"
+    ]
+  ]
+}

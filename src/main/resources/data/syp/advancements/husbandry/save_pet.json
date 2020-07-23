@@ -1,0 +1,29 @@
+{
+  "parent": "minecraft:husbandry/tame_an_animal",
+  "display": {
+    "icon": {
+      "item": "syp:pet_bandage"
+    },
+    "title": {
+      "translate": "advancements.husbandry.syp.save_pet.title"
+    },
+    "description": {
+      "translate": "advancements.husbandry.syp.save_pet.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "save_pet": {
+      "trigger": "syp:save_pet",
+      "conditions": {}
+    }
+  },
+  "requirements": [
+    [
+      "save_pet"
+    ]
+  ]
+}

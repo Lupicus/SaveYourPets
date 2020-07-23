@@ -1,0 +1,15 @@
+{
+	"item.syp.pet_bandage": "Vendaje para mascotas",
+	"item.syp.golden_pet_bandage": "Vendaje dorado para mascotas",
+	"advancements.husbandry.syp.save_pet.title": "Salvador de mascotas",
+	"advancements.husbandry.syp.save_pet.description": "Salva a una mascota de morir",
+	"advancements.husbandry.syp.save_all_pets.title": "Médico de mascotas",
+	"advancements.husbandry.syp.save_all_pets.description": "¡Salva a todos los tipos de mascotas de morir!",
+	"syp.pet_dying.wolf": "¡Tu lobo mascota se está muriendo!",
+	"syp.pet_dying.cat": "¡Tu gato mascota se está muriendo!",
+	"syp.pet_dying.horse": "¡Tu caballo mascota se está muriendo!",
+	"syp.pet_dying.donkey": "¡Tu burro mascota se está muriendo!",
+	"syp.pet_dying.mule": "¡Tu mula se está muriendo!",
+	"syp.pet_dying.llama": "¡Tu llama mascota se está muriendo!",
+	"syp.pet_dying.parrot": "¡Tu loro mascota se está muriendo!"
+}

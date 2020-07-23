@@ -1,0 +1,17 @@
+package com.lupicus.syp.entity;
+
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.Hand;
+import net.minecraft.util.math.Vec3d;
+
+public interface IDying
+{
+	public boolean isDying();
+
+	public boolean dyingInteract(PlayerEntity player, Hand hand);
+
+	default String formatLoc(Vec3d pos)
+	{
+		return String.format("[%.1f, %.1f, %.1f]", pos.x, pos.y, pos.z);
+	}
+}

@@ -1,0 +1,15 @@
+{
+	"item.syp.pet_bandage": "Haustierverband",
+	"item.syp.golden_pet_bandage": "Goldener Haustierverband",
+	"advancements.husbandry.syp.save_pet.title": "Haustier Retter",
+	"advancements.husbandry.syp.save_pet.description": "Rette ein Haustier vor dem Sterben",
+	"advancements.husbandry.syp.save_all_pets.title": "Tierarzt",
+	"advancements.husbandry.syp.save_all_pets.description": "Rette alle Haustiertypen vor dem Sterben!",
+	"syp.pet_dying.wolf": "Dein Haustier Wolf stirbt!",
+	"syp.pet_dying.cat": "Ihre Haustierkatze stirbt!",
+	"syp.pet_dying.horse": "Dein Haustier stirbt!",
+	"syp.pet_dying.donkey": "Ihr Haustier Esel stirbt!",
+	"syp.pet_dying.mule": "Ihr Haustier Maultier stirbt!",
+	"syp.pet_dying.llama": "Dein Haustier Lama stirbt!",
+	"syp.pet_dying.parrot": "Ihr Papagei stirbt!"
+}

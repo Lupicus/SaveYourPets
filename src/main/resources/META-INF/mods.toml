@@ -1,0 +1,23 @@
+modLoader="javafml"
+loaderVersion="[30,)"
+[[mods]]
+modId="syp"
+version="${file.jarVersion}"
+displayName="Save Your Pets"
+displayURL="https://www.curseforge.com/minecraft/mc-mods/save-your-pets"
+logoFile="logo.png"
+credits="Ivan133ru"
+authors="Lupicus, MacTso"
+description='''Save Your Pets Mod'''
+[[dependencies.syp]]
+    modId="forge"
+    mandatory=true
+    versionRange="[30,)"
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.syp]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.15.1,1.16)"
+    ordering="NONE"
+    side="BOTH"

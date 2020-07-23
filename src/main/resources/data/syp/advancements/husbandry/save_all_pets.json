@@ -1,0 +1,102 @@
+{
+  "parent": "syp:husbandry/save_pet",
+  "display": {
+    "icon": {
+      "item": "syp:golden_pet_bandage"
+    },
+    "title": {
+      "translate": "advancements.husbandry.syp.save_all_pets.title"
+    },
+    "description": {
+      "translate": "advancements.husbandry.syp.save_all_pets.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "rewards": {
+    "experience": 100
+  },
+  "criteria": {
+    "minecraft:horse": {
+      "trigger": "syp:save_pet",
+      "conditions": {
+        "entity": {
+          "type": "minecraft:horse"
+        }
+      }
+    },
+    "minecraft:donkey": {
+      "trigger": "syp:save_pet",
+      "conditions": {
+        "entity": {
+          "type": "minecraft:donkey"
+        }
+      }
+    },
+    "minecraft:mule": {
+      "trigger": "syp:save_pet",
+      "conditions": {
+        "entity": {
+          "type": "minecraft:mule"
+        }
+      }
+    },
+    "minecraft:wolf": {
+      "trigger": "syp:save_pet",
+      "conditions": {
+        "entity": {
+          "type": "minecraft:wolf"
+        }
+      }
+    },
+    "minecraft:llama": {
+      "trigger": "syp:save_pet",
+      "conditions": {
+        "entity": {
+          "type": "minecraft:llama"
+        }
+      }
+    },
+    "minecraft:cat": {
+      "trigger": "syp:save_pet",
+      "conditions": {
+        "entity": {
+          "type": "minecraft:cat"
+        }
+      }
+    },
+    "minecraft:parrot": {
+      "trigger": "syp:save_pet",
+      "conditions": {
+        "entity": {
+          "type": "minecraft:parrot"
+        }
+      }
+    }
+  },
+  "requirements": [
+    [
+      "minecraft:horse"
+    ],
+    [
+      "minecraft:donkey"
+    ],
+    [
+      "minecraft:mule"
+    ],
+    [
+      "minecraft:wolf"
+    ],
+    [
+      "minecraft:llama"
+    ],
+    [
+      "minecraft:cat"
+    ],
+    [
+      "minecraft:parrot"
+    ]
+  ]
+}

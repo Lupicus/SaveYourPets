@@ -1,0 +1,15 @@
+{
+	"item.syp.pet_bandage": "Kjæledyrbandasje",
+	"item.syp.golden_pet_bandage": "Gylden kjæledyrbandasje",
+	"advancements.husbandry.syp.save_pet.title": "Kjæledyr Frelser",
+	"advancements.husbandry.syp.save_pet.description": "Redd et kjæledyr fra å dø",
+	"advancements.husbandry.syp.save_all_pets.title": "Kjæledyrlege",
+	"advancements.husbandry.syp.save_all_pets.description": "Lagre alle kjæledyrstyper fra å dø!",
+	"syp.pet_dying.wolf": "Dyrenes ulv er døende!",
+	"syp.pet_dying.cat": "Kjæledyrskatten din er døende!",
+	"syp.pet_dying.horse": "Kjæledyrshesten din er døende!",
+	"syp.pet_dying.donkey": "Ditt esel er i ferd med å dø!",
+	"syp.pet_dying.mule": "Dyret ditt muldyr er i ferd med å dø!",
+	"syp.pet_dying.llama": "Kjæledyrlamaen din er i ferd med å dø!",
+	"syp.pet_dying.parrot": "Papegøyen din er døende!"
+}
