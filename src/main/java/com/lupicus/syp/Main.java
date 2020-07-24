@@ -17,7 +17,6 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 @Mod(Main.MODID)
@@ -34,6 +33,7 @@ public class Main
 	@SubscribeEvent
 	public void setupCommon(final FMLCommonSetupEvent event)
 	{
+		ModTriggers.register();
 	}
 
 	@OnlyIn(Dist.CLIENT)
@@ -62,12 +62,6 @@ public class Main
 	@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE)
 	public static class ForgeEvents
 	{
-		@SubscribeEvent
-		public static void onServerAboutToStart(FMLServerAboutToStartEvent event)
-		{
-			ModTriggers.register();
-		}
-
 		@SubscribeEvent
 		public static void onLoot(final LootTableLoadEvent event)
 		{

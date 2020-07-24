@@ -46,8 +46,8 @@ function fix_PII(obj) {
 		var op4 = new VarInsnNode(opc.ALOAD, 0)
 		var op5 = new VarInsnNode(opc.ALOAD, 1)
 		var op6 = new VarInsnNode(opc.ALOAD, 2)
-		var op7 = asmapi.buildMethodCall("com/lupicus/syp/entity/IDying", "dyingInteract", "(Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/util/Hand;)Z", asmapi.MethodType.INTERFACE)
-		var op8 = new InsnNode(opc.IRETURN)
+		var op7 = asmapi.buildMethodCall("com/lupicus/syp/entity/IDying", "dyingInteract", "(Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/util/Hand;)Lnet/minecraft/util/ActionResultType;", asmapi.MethodType.INTERFACE)
+		var op8 = new InsnNode(opc.ARETURN)
 		var list = asmapi.listOf(op1, op2, op3, op4, op5, op6, op7, op8, op9)
 		obj.instructions.insertBefore(node2, list)
 	}

@@ -1,13 +1,13 @@
 package com.lupicus.syp.item;
 
+import net.minecraft.loot.ConstantRange;
+import net.minecraft.loot.EmptyLootEntry;
+import net.minecraft.loot.ItemLootEntry;
+import net.minecraft.loot.LootPool;
+import net.minecraft.loot.LootTable;
+import net.minecraft.loot.LootTableManager;
+import net.minecraft.loot.LootTables;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.storage.loot.ConstantRange;
-import net.minecraft.world.storage.loot.EmptyLootEntry;
-import net.minecraft.world.storage.loot.ItemLootEntry;
-import net.minecraft.world.storage.loot.LootPool;
-import net.minecraft.world.storage.loot.LootTable;
-import net.minecraft.world.storage.loot.LootTableManager;
-import net.minecraft.world.storage.loot.LootTables;
 
 public class ModLoot
 {

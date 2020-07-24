@@ -18,11 +18,12 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
@@ -72,12 +73,12 @@ public abstract class DyingHorseEntity extends AbstractHorseEntity implements ID
 				player = world.getPlayerByUuid(uuid);
 			if (player != null && !world.isRemote && world.getGameRules().getBoolean(GameRules.SHOW_DEATH_MESSAGES)
 					&& player instanceof ServerPlayerEntity) {
-				ITextComponent msg = new TranslationTextComponent(Main.MODID + ".pet_dying.horse");
+				TextComponent msg = new TranslationTextComponent(Main.MODID + ".pet_dying.horse");
 				if (hasCustomName())
-					msg.appendSibling(new StringTextComponent(" ")).appendSibling(getCustomName());
+					msg.func_230529_a_(new StringTextComponent(" ")).func_230529_a_(getCustomName());
 				if (MyConfig.showLoc)
-					msg.appendSibling(new StringTextComponent(" " + formatLoc(getPositionVec())));
-				player.sendMessage(msg);
+					msg.func_230529_a_(new StringTextComponent(" " + formatLoc(getPositionVec())));
+				player.sendMessage(msg, player.getUniqueID());
 			}
 			detach();
 			this.dataManager.set(POSE, Pose.DYING);
@@ -134,10 +135,10 @@ public abstract class DyingHorseEntity extends AbstractHorseEntity implements ID
 	}
 
 	@Override
-	public boolean dyingInteract(PlayerEntity player, Hand hand)
+	public ActionResultType dyingInteract(PlayerEntity player, Hand hand)
 	{
 		if (!isDying())
-			return false;
+			return ActionResultType.PASS;
 		ItemStack itemstack = player.getHeldItem(hand);
 		Item item = itemstack.getItem();
 		if (item == ModItems.PET_BANDAGE || item == ModItems.GOLDEN_PET_BANDAGE)
@@ -149,13 +150,13 @@ public abstract class DyingHorseEntity extends AbstractHorseEntity implements ID
 				ModTriggers.SAVE_PET.trigger((ServerPlayerEntity) player, this);
 			}
 			cureEntity(item);
-			return true;
+			return ActionResultType.func_233537_a_(world.isRemote);
 		}
-		else if (player.func_226563_dT_()) {
+		else if (player.isSecondaryUseActive()) {
 			openGUI(player);
-			return true;
+			return ActionResultType.func_233537_a_(world.isRemote);
 		}
-		return false;
+		return ActionResultType.PASS;
 	}
 
 	void cureEntity(Item item)
@@ -167,7 +168,7 @@ public abstract class DyingHorseEntity extends AbstractHorseEntity implements ID
 			this.world.addParticle(ParticleTypes.HEART, this.getPosXRandom(1.0D), this.getPosYRandom(),
 					this.getPosZRandom(1.0D), d0, d1, d2);
 		}
-		setMotion(Vec3d.ZERO);
+		setMotion(Vector3d.ZERO);
 		this.dataManager.set(POSE, Pose.STANDING);
 		setHealth(1.0F);
 		deathTime = 0;

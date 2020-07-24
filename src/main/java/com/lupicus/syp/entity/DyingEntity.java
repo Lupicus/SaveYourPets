@@ -6,6 +6,7 @@ import com.lupicus.syp.config.MyConfig;
 import com.lupicus.syp.item.ModItems;
 
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.passive.TameableEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -16,11 +17,12 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
@@ -68,12 +70,13 @@ public abstract class DyingEntity extends TameableEntity implements IDying
 					&& getOwner() instanceof ServerPlayerEntity) {
 				Class<? extends DyingEntity> clazz = this.getClass();
 				String type = clazz.getSimpleName().replace("Entity", "").toLowerCase();
-				ITextComponent msg = new TranslationTextComponent(Main.MODID + ".pet_dying." + type);
+				TextComponent msg = new TranslationTextComponent(Main.MODID + ".pet_dying." + type);
 				if (hasCustomName())
-					msg.appendSibling(new StringTextComponent(" ")).appendSibling(getCustomName());
+					msg.func_230529_a_(new StringTextComponent(" ")).func_230529_a_(getCustomName());
 				if (MyConfig.showLoc)
-					msg.appendSibling(new StringTextComponent(" " + formatLoc(getPositionVec())));
-				getOwner().sendMessage(msg);
+					msg.func_230529_a_(new StringTextComponent(" " + formatLoc(getPositionVec())));
+				LivingEntity player = getOwner();
+				player.sendMessage(msg, player.getUniqueID());
 			}
 			this.dataManager.set(POSE, Pose.DYING);
 			woundedTime = world.getGameTime();
@@ -129,10 +132,10 @@ public abstract class DyingEntity extends TameableEntity implements IDying
 	}
 
 	@Override
-	public boolean dyingInteract(PlayerEntity player, Hand hand)
+	public ActionResultType dyingInteract(PlayerEntity player, Hand hand)
 	{
 		if (!isDying())
-			return false;
+			return ActionResultType.PASS;
 		ItemStack itemstack = player.getHeldItem(hand);
 		Item item = itemstack.getItem();
 		if (item == ModItems.PET_BANDAGE || item == ModItems.GOLDEN_PET_BANDAGE)
@@ -144,9 +147,9 @@ public abstract class DyingEntity extends TameableEntity implements IDying
 				ModTriggers.SAVE_PET.trigger((ServerPlayerEntity) player, this);
 			}
 			cureEntity(item);
-			return true;
+			return ActionResultType.func_233537_a_(world.isRemote);
 		}
-		return false;
+		return ActionResultType.PASS;
 	}
 
 	void cureEntity(Item item)
@@ -158,7 +161,7 @@ public abstract class DyingEntity extends TameableEntity implements IDying
 			this.world.addParticle(ParticleTypes.HEART, this.getPosXRandom(1.0D), this.getPosYRandom(),
 					this.getPosZRandom(1.0D), d0, d1, d2);
 		}
-		setMotion(Vec3d.ZERO);
+		setMotion(Vector3d.ZERO);
 		this.dataManager.set(POSE, Pose.STANDING);
 		setHealth(1.0F);
 		deathTime = 0;

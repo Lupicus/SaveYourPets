@@ -1,7 +1,5 @@
 package com.lupicus.syp.advancements.criterion;
 
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.lupicus.syp.Main;
 
@@ -10,6 +8,9 @@ import net.minecraft.advancements.criterion.CriterionInstance;
 import net.minecraft.advancements.criterion.EntityPredicate;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.loot.ConditionArrayParser;
+import net.minecraft.loot.ConditionArraySerializer;
+import net.minecraft.loot.LootContext;
 import net.minecraft.util.ResourceLocation;
 
 public class SavePetTrigger extends AbstractCriterionTrigger<SavePetTrigger.Instance>
@@ -22,41 +23,42 @@ public class SavePetTrigger extends AbstractCriterionTrigger<SavePetTrigger.Inst
 	}
 
 	@Override
-	public Instance deserializeInstance(JsonObject json, JsonDeserializationContext context) {
-		EntityPredicate entitypredicate = EntityPredicate.deserialize(json.get("entity"));
-		return new SavePetTrigger.Instance(entitypredicate);
+	public Instance func_230241_b_(JsonObject json, EntityPredicate.AndPredicate predicate, ConditionArrayParser parser) {
+		EntityPredicate.AndPredicate entitypredicate = EntityPredicate.AndPredicate.func_234587_a_(json, "entity", parser);
+		return new SavePetTrigger.Instance(predicate, entitypredicate);
 	}
 
 	public void trigger(ServerPlayerEntity player, AnimalEntity entity) {
-		this.func_227070_a_(player.getAdvancements(), (p_227251_2_) -> {
-			return p_227251_2_.test(player, entity);
+		LootContext lootcontext = EntityPredicate.func_234575_b_(player, entity);
+		this.func_235959_a_(player, (p_227251_1_) -> {
+			return p_227251_1_.func_236323_a_(lootcontext);
 		});
 	}
 
 	public static class Instance extends CriterionInstance {
-		private final EntityPredicate entity;
+		private final EntityPredicate.AndPredicate entity;
 
-		public Instance(EntityPredicate entity) {
-			super(SavePetTrigger.ID);
+		public Instance(EntityPredicate.AndPredicate predicate, EntityPredicate.AndPredicate entity) {
+			super(SavePetTrigger.ID, predicate);
 			this.entity = entity;
 		}
 
 		public static SavePetTrigger.Instance any() {
-			return new SavePetTrigger.Instance(EntityPredicate.ANY);
+			return new SavePetTrigger.Instance(EntityPredicate.AndPredicate.field_234582_a_, EntityPredicate.AndPredicate.field_234582_a_);
 		}
 
-		public static SavePetTrigger.Instance func_215124_a(EntityPredicate p_215124_0_) {
-			return new SavePetTrigger.Instance(p_215124_0_);
+		public static SavePetTrigger.Instance create(EntityPredicate predicate) {
+			return new SavePetTrigger.Instance(EntityPredicate.AndPredicate.field_234582_a_, EntityPredicate.AndPredicate.func_234585_a_(predicate));
 		}
 
-		public boolean test(ServerPlayerEntity player, AnimalEntity entity) {
-			return this.entity.test(player, entity);
+		public boolean func_236323_a_(LootContext lootcontext) {
+			return this.entity.func_234588_a_(lootcontext);
 		}
 
 		@Override
-		public JsonElement serialize() {
-			JsonObject jsonobject = new JsonObject();
-			jsonobject.add("entity", this.entity.serialize());
+		public JsonObject func_230240_a_(ConditionArraySerializer serializer) {
+			JsonObject jsonobject = super.func_230240_a_(serializer);
+			jsonobject.add("entity", this.entity.func_234586_a_(serializer));
 			return jsonobject;
 		}
 	}
