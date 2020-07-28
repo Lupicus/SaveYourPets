@@ -7,6 +7,7 @@ import com.lupicus.syp.advancements.ModTriggers;
 import com.lupicus.syp.config.MyConfig;
 import com.lupicus.syp.item.ModItems;
 
+import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.passive.horse.AbstractChestedHorseEntity;
@@ -21,18 +22,21 @@ import net.minecraft.potion.Effects;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 public abstract class DyingChestedHorseEntity extends AbstractChestedHorseEntity implements IDying
 {
 	protected long woundedTime;
+	double dx, ay, dz;
 
 	protected DyingChestedHorseEntity(EntityType<? extends AbstractChestedHorseEntity> type, World worldIn) {
 		super(type, worldIn);
@@ -85,6 +89,9 @@ public abstract class DyingChestedHorseEntity extends AbstractChestedHorseEntity
 			detach();
 			this.dataManager.set(POSE, Pose.DYING);
 			woundedTime = world.getGameTime();
+			rotationYaw = renderYawOffset;
+			rotationYawHead = renderYawOffset;
+			rotationPitch = 0.0F;
 		}
 	}
 
@@ -97,13 +104,16 @@ public abstract class DyingChestedHorseEntity extends AbstractChestedHorseEntity
 			return;
 		}
 		if (deathTime < 20)
+		{
 			deathTime++;
+			if (deathTime == 10)
+				modifyBoundingBox();
+		}
 		else if (!world.isRemote && world.getGameTime() - woundedTime >= MyConfig.deathTimer)
 		{
 			if (MyConfig.autoHeal)
 			{
 				cureEntity(ModItems.GOLDEN_PET_BANDAGE);
-				world.setEntityState(this, (byte) 101);
 			}
 			else
 			{
@@ -118,7 +128,7 @@ public abstract class DyingChestedHorseEntity extends AbstractChestedHorseEntity
 	public void handleStatusUpdate(byte id)
 	{
 		if (id == 101)
-			cureEntity(ModItems.GOLDEN_PET_BANDAGE);
+			cureEntity(null);
 		else {
 			super.handleStatusUpdate(id);
 			if (id == 3 && isTame())
@@ -150,8 +160,8 @@ public abstract class DyingChestedHorseEntity extends AbstractChestedHorseEntity
             }
 			if (player instanceof ServerPlayerEntity) {
 				ModTriggers.SAVE_PET.trigger((ServerPlayerEntity) player, this);
+				cureEntity(item);
 			}
-			cureEntity(item);
 			return ActionResultType.func_233537_a_(world.isRemote);
 		}
 		else if (player.isSecondaryUseActive()) {
@@ -163,17 +173,23 @@ public abstract class DyingChestedHorseEntity extends AbstractChestedHorseEntity
 
 	void cureEntity(Item item)
 	{
-		for (int i = 0; i < 10; ++i) {
-			double d0 = this.rand.nextGaussian() * 0.02D;
-			double d1 = this.rand.nextGaussian() * 0.02D;
-			double d2 = this.rand.nextGaussian() * 0.02D;
-			this.world.addParticle(ParticleTypes.HEART, this.getPosXRandom(1.0D), this.getPosYRandom(),
-					this.getPosZRandom(1.0D), d0, d1, d2);
+		if (world.isRemote)
+		{
+			for (int i = 0; i < 10; ++i) {
+				double d0 = this.rand.nextGaussian() * 0.02D;
+				double d1 = this.rand.nextGaussian() * 0.02D;
+				double d2 = this.rand.nextGaussian() * 0.02D;
+				this.world.addParticle(ParticleTypes.HEART, this.getPosXRandom(1.0D), this.getPosYRandom(),
+						this.getPosZRandom(1.0D), d0, d1, d2);
+			}
 		}
+		else
+			world.setEntityState(this, (byte) 101);
 		setMotion(Vector3d.ZERO);
 		this.dataManager.set(POSE, Pose.STANDING);
 		setHealth(1.0F);
 		deathTime = 0;
+		recenterBoundingBox();
 		if (item == ModItems.GOLDEN_PET_BANDAGE)
 			addPotionEffect(new EffectInstance(Effects.REGENERATION, MyConfig.healTime, 1));
 	}
@@ -183,5 +199,73 @@ public abstract class DyingChestedHorseEntity extends AbstractChestedHorseEntity
 		if (isDying())
 			return true;
 		return super.isMovementBlocked();
+	}
+
+	@Override
+	public void setBoundingBox(AxisAlignedBB bb)
+	{
+		if (deathTime >= 10)
+		{
+			AxisAlignedBB oldbb = getBoundingBox();
+			dx += bb.minX - oldbb.minX;
+			ay = bb.minY;
+			dz += bb.minZ - oldbb.minZ;
+		}
+		super.setBoundingBox(bb);
+	}
+
+	@Override
+	public void setPosition(double x, double y, double z)
+	{
+		super.setPosition(x, y, z);
+		if (deathTime >= 10)
+			modifyBoundingBox();
+	}
+
+	@Override
+	public void resetPositionToBB()
+	{
+		if (deathTime >= 10)
+		{
+			setRawPosition(getPosX() + dx, ay, getPosZ() + dz);
+			dx = 0;
+			dz = 0;
+		    if (isAddedToWorld() && !world.isRemote && world instanceof ServerWorld)
+		    	((ServerWorld) world).chunkCheck(this); // Forge - Process chunk registration after moving.
+			return;
+		}
+		super.resetPositionToBB();
+	}
+
+	private void modifyBoundingBox()
+	{
+		double ang = (double) rotationYaw * (Math.PI / 180.0);
+		EntitySize size = getSize(Pose.STANDING);
+		double width = size.width / 2.0;
+		double length = size.height / 2.0;
+		double lcos = length * Math.cos(ang);
+		double lsin = length * Math.sin(ang);
+		double x0 = getPosX();
+		double x1 = x0 + lcos;
+		double y0 = getPosY();
+		double z0 = getPosZ();
+		double z1 = z0 + lsin;
+		double hw = (width + length) / 2.0;
+		double xmin = x1 - hw;
+		double xmax = x1 + hw;
+		if (x0 < xmin)
+			xmin = x0;
+		else if (x0 > xmax)
+			xmax = x0;
+		double zmin = z1 - hw;
+		double zmax = z1 + hw;
+		if (z0 < zmin)
+			zmin = z0;
+		else if (z0 > zmax)
+			zmax = z0;
+		super.setBoundingBox(new AxisAlignedBB(xmin, y0, zmin, xmax, y0 + width, zmax));
+		dx = 0;
+		ay = y0;
+		dz = 0;
 	}
 }
