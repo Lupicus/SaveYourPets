@@ -35,6 +35,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public abstract class DyingHorseEntity extends AbstractHorseEntity implements IDying
 {
 	protected long woundedTime;
+	protected int woundedTicks;
 	double dx, ay, dz;
 
 	protected DyingHorseEntity(EntityType<? extends AbstractHorseEntity> type, World worldIn) {
@@ -47,6 +48,11 @@ public abstract class DyingHorseEntity extends AbstractHorseEntity implements ID
 		if (compound.contains("WoundedTime"))
 		{
 			woundedTime = compound.getLong("WoundedTime");
+			woundedTicks = ticksExisted;
+			if (compound.contains("WoundedTicks"))
+				woundedTicks -= compound.getInt("WoundedTicks");
+			else
+				woundedTicks -= (int) (world.getGameTime() - woundedTime);
 			dataManager.set(POSE, Pose.DYING);
 			setHealth(0.0F);
 			deathTime = 20;
@@ -57,7 +63,10 @@ public abstract class DyingHorseEntity extends AbstractHorseEntity implements ID
 	public void writeAdditional(CompoundNBT compound) {
 		super.writeAdditional(compound);
 		if (isDying())
+		{
 			compound.putLong("WoundedTime", woundedTime);
+			compound.putInt("WoundedTicks", ticksExisted - woundedTicks);
+		}
 	}
 
 	@Override
@@ -86,6 +95,7 @@ public abstract class DyingHorseEntity extends AbstractHorseEntity implements ID
 			detach();
 			this.dataManager.set(POSE, Pose.DYING);
 			woundedTime = world.getGameTime();
+			woundedTicks = ticksExisted;
 			rotationYaw = renderYawOffset;
 			rotationYawHead = renderYawOffset;
 			rotationPitch = 0.0F;
@@ -106,8 +116,11 @@ public abstract class DyingHorseEntity extends AbstractHorseEntity implements ID
 			if (deathTime == 10)
 				modifyBoundingBox();
 		}
-		else if (!world.isRemote && world.getGameTime() - woundedTime >= MyConfig.deathTimer)
+		else if (!world.isRemote)
 		{
+		    int time = (MyConfig.useWorldTicks) ? (int) (world.getGameTime() - woundedTime) : ticksExisted - woundedTicks;
+		    if (time < MyConfig.deathTimer)
+		    	return;
 			if (MyConfig.autoHeal)
 			{
 				cureEntity(ModItems.GOLDEN_PET_BANDAGE);

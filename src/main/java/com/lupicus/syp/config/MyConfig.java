@@ -25,6 +25,7 @@ public class MyConfig
 
 	public static boolean autoHeal;
 	public static boolean showLoc;
+	public static boolean useWorldTicks;
 	public static int deathTimer;
 	public static int healTime;
 
@@ -41,6 +42,7 @@ public class MyConfig
 	{
 		autoHeal = SERVER.autoHeal.get();
 		showLoc = SERVER.showLoc.get();
+		useWorldTicks = SERVER.useWorldTicks.get();
 		deathTimer = SERVER.deathTimer.get();
 		healTime = SERVER.healTime.get() * 20;
 	}
@@ -49,6 +51,7 @@ public class MyConfig
 	{
 		public final BooleanValue autoHeal;
 		public final BooleanValue showLoc;
+		public final BooleanValue useWorldTicks;
 		public final IntValue deathTimer;
 		public final IntValue healTime;
 
@@ -77,6 +80,11 @@ public class MyConfig
 					.comment("Show Location")
 					.translation(sectionTrans + "show_loc")
 					.define("ShowLoc", true);
+
+			useWorldTicks = builder
+					.comment("Use world ticks otherwise chunk ticks")
+					.translation(sectionTrans + "world_ticks")
+					.define("UseWorldTicks", false);
 		}
 	}
 }
