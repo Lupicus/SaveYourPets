@@ -193,7 +193,14 @@ public abstract class DyingEntity extends TameableEntity implements IDying
 		this.dataManager.set(POSE, Pose.STANDING);
 		setHealth(1.0F);
 		deathTime = 0;
-		recenterBoundingBox();
+		if (!world.isRemote && isEntityInsideOpaqueBlock())
+		{
+			super.setPosition(Math.floor(getPosX()) + 0.5, getPosY(), Math.floor(getPosZ()) + 0.5);
+			if (isEntityInsideOpaqueBlock())
+				setHealth(3.0F);
+		}
+		else
+			recenterBoundingBox();
 		if (item == ModItems.GOLDEN_PET_BANDAGE)
 			addPotionEffect(new EffectInstance(Effects.REGENERATION, MyConfig.healTime, 1));
 	}
