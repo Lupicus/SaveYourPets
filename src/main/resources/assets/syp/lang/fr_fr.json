@@ -11,5 +11,6 @@
 	"syp.pet_dying.donkey": "Votre âne de compagnie est en train de mourir!",
 	"syp.pet_dying.mule": "Votre mule est en train de mourir!",
 	"syp.pet_dying.llama": "Votre lama de compagnie est en train de mourir!",
-	"syp.pet_dying.parrot": "Votre perroquet est en train de mourir!"
+	"syp.pet_dying.parrot": "Votre perroquet est en train de mourir!",
+	"syp.pet_dying.generic": "Votre animal est en train de mourir!"
 }

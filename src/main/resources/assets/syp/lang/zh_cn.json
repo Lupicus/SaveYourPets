@@ -11,5 +11,6 @@
 	"syp.pet_dying.donkey": "您的宠物驴快死了！",
 	"syp.pet_dying.mule": "您的宠物骡子快死了！",
 	"syp.pet_dying.llama": "您的宠物骆驼快死了！",
-	"syp.pet_dying.parrot": "你的宠物鹦鹉快死了！"
+	"syp.pet_dying.parrot": "你的宠物鹦鹉快死了！",
+	"syp.pet_dying.generic": "你的宠物快死了！"
 }

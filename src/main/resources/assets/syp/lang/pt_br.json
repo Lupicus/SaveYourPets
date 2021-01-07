@@ -1,0 +1,16 @@
+{
+	"item.syp.pet_bandage": "Bandagem para animais",
+	"item.syp.golden_pet_bandage": "Bandagem Dourada para Pet",
+	"advancements.husbandry.syp.save_pet.title": "Salvador de animais de estimação",
+	"advancements.husbandry.syp.save_pet.description": "Salve um animal de estimação da morte",
+	"advancements.husbandry.syp.save_all_pets.title": "Médico de estimação",
+	"advancements.husbandry.syp.save_all_pets.description": "Salve todos os tipos de animais de estimação da morte!",
+	"syp.pet_dying.wolf": "Seu lobo de estimação está morrendo!",
+	"syp.pet_dying.cat": "Seu gato de estimação está morrendo!",
+	"syp.pet_dying.horse": "Seu cavalo de estimação está morrendo!",
+	"syp.pet_dying.donkey": "Seu burro de estimação está morrendo!",
+	"syp.pet_dying.mule": "Sua mula de estimação está morrendo!",
+	"syp.pet_dying.llama": "Seu lhama de estimação está morrendo!",
+	"syp.pet_dying.parrot": "Seu papagaio de estimação está morrendo!",
+	"syp.pet_dying.generic": "Seu animal de estimação está morrendo!"
+}

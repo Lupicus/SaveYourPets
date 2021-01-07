@@ -11,5 +11,6 @@
 	"syp.pet_dying.donkey": "Ditt esel er i ferd med å dø!",
 	"syp.pet_dying.mule": "Dyret ditt muldyr er i ferd med å dø!",
 	"syp.pet_dying.llama": "Kjæledyrlamaen din er i ferd med å dø!",
-	"syp.pet_dying.parrot": "Papegøyen din er døende!"
+	"syp.pet_dying.parrot": "Papegøyen din er døende!",
+	"syp.pet_dying.generic": "Kjæledyret ditt er døende!"
 }

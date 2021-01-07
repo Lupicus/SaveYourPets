@@ -11,5 +11,6 @@
 	"syp.pet_dying.donkey": "Ваш домашний осел умирает!",
 	"syp.pet_dying.mule": "Ваш любимый мул умирает!",
 	"syp.pet_dying.llama": "Ваш любимый лама умирает!",
-	"syp.pet_dying.parrot": "Ваш любимый попугай умирает!"
+	"syp.pet_dying.parrot": "Ваш любимый попугай умирает!",
+	"syp.pet_dying.generic": "Ваш питомец умирает!"
 }
