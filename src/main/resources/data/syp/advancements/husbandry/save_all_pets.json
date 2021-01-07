@@ -55,7 +55,7 @@
       "trigger": "syp:save_pet",
       "conditions": {
         "entity": {
-          "type": "minecraft:llama"
+          "type": "#syp:llamas"
         }
       }
     },

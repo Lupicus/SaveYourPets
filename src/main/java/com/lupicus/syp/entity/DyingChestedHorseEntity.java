@@ -22,6 +22,7 @@ import net.minecraft.potion.Effects;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.StringTextComponent;
@@ -84,10 +85,20 @@ public abstract class DyingChestedHorseEntity extends AbstractChestedHorseEntity
 			UUID uuid = getOwnerUniqueId();
 			if (uuid != null)
 				player = world.getPlayerByUuid(uuid);
-			if (player != null && !world.isRemote && world.getGameRules().getBoolean(GameRules.SHOW_DEATH_MESSAGES)
-					&& player instanceof ServerPlayerEntity) {
-				Class<? extends DyingChestedHorseEntity> clazz = this.getClass();
-				String type = clazz.getSimpleName().replace("Entity", "").toLowerCase();
+			if (player instanceof ServerPlayerEntity && world.getGameRules().getBoolean(GameRules.SHOW_DEATH_MESSAGES))
+			{
+				ResourceLocation res = getType().getRegistryName();
+				String type;
+				if (res.getNamespace().equals("minecraft"))
+				{
+					type = res.getPath();
+					if (type.equals("trader_llama"))
+						type = "llama";
+				}
+				else
+				{
+					type = "generic";
+				}
 				TextComponent msg = new TranslationTextComponent(Main.MODID + ".pet_dying." + type);
 				if (hasCustomName())
 					msg.func_230529_a_(new StringTextComponent(" ")).func_230529_a_(getCustomName());

@@ -11,5 +11,6 @@
 	"syp.pet_dying.donkey": "Your pet donkey is dying!",
 	"syp.pet_dying.mule": "Your pet mule is dying!",
 	"syp.pet_dying.llama": "Your pet llama is dying!",
-	"syp.pet_dying.parrot": "Your pet parrot is dying!"
+	"syp.pet_dying.parrot": "Your pet parrot is dying!",
+	"syp.pet_dying.generic": "Your pet is dying!"
 }

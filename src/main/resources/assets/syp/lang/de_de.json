@@ -11,5 +11,6 @@
 	"syp.pet_dying.donkey": "Ihr Haustier Esel stirbt!",
 	"syp.pet_dying.mule": "Ihr Haustier Maultier stirbt!",
 	"syp.pet_dying.llama": "Dein Haustier Lama stirbt!",
-	"syp.pet_dying.parrot": "Ihr Papagei stirbt!"
+	"syp.pet_dying.parrot": "Ihr Papagei stirbt!",
+	"syp.pet_dying.generic": "Ihr Haustier stirbt!"
 }
