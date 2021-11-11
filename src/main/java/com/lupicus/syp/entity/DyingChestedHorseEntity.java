@@ -7,85 +7,83 @@ import com.lupicus.syp.advancements.ModTriggers;
 import com.lupicus.syp.config.MyConfig;
 import com.lupicus.syp.item.ModItems;
 
-import net.minecraft.entity.EntitySize;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.Pose;
-import net.minecraft.entity.passive.horse.AbstractChestedHorseEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.Effects;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.GameRules;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.animal.horse.AbstractChestedHorse;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public abstract class DyingChestedHorseEntity extends AbstractChestedHorseEntity implements IDying
+public abstract class DyingChestedHorseEntity extends AbstractChestedHorse implements IDying
 {
 	protected long woundedTime;
 	protected int woundedTicks;
-	double dx, ay, dz;
 
-	protected DyingChestedHorseEntity(EntityType<? extends AbstractChestedHorseEntity> type, World worldIn) {
+	protected DyingChestedHorseEntity(EntityType<? extends AbstractChestedHorse> type, Level worldIn) {
 		super(type, worldIn);
 	}
 
 	@Override
-	public void readAdditional(CompoundNBT compound) {
-		super.readAdditional(compound);
+	public void readAdditionalSaveData(CompoundTag compound) {
+		super.readAdditionalSaveData(compound);
 		if (compound.contains("WoundedTime"))
 		{
 			woundedTime = compound.getLong("WoundedTime");
-			woundedTicks = ticksExisted;
+			woundedTicks = tickCount;
 			if (compound.contains("WoundedTicks"))
 				woundedTicks -= compound.getInt("WoundedTicks");
 			else
-				woundedTicks -= (int) (world.getGameTime() - woundedTime);
-			dataManager.set(POSE, Pose.DYING);
+				woundedTicks -= (int) (level.getGameTime() - woundedTime);
+			entityData.set(DATA_POSE, Pose.DYING);
 			setHealth(0.0F);
 			deathTime = 20;
 		}
 	}
 
 	@Override
-	public void writeAdditional(CompoundNBT compound) {
-		super.writeAdditional(compound);
+	public void addAdditionalSaveData(CompoundTag compound) { // write
+		super.addAdditionalSaveData(compound);
 		if (isDying())
 		{
 			compound.putLong("WoundedTime", woundedTime);
-			compound.putInt("WoundedTicks", ticksExisted - woundedTicks);
+			compound.putInt("WoundedTicks", tickCount - woundedTicks);
 		}
 	}
 
 	@Override
-	public void onDeath(DamageSource cause)
+	public void die(DamageSource cause)
 	{
-		if (!isTame())
+		if (!isTamed())
 		{
-			super.onDeath(cause);
+			super.die(cause);
 			return;
 		}
 		if (!isDying())
 		{
-			PlayerEntity player = null;
-			UUID uuid = getOwnerUniqueId();
+			Player player = null;
+			UUID uuid = getOwnerUUID();
 			if (uuid != null)
-				player = world.getPlayerByUuid(uuid);
-			if (player instanceof ServerPlayerEntity && world.getGameRules().getBoolean(GameRules.SHOW_DEATH_MESSAGES))
+				player = level.getPlayerByUUID(uuid);
+			if (player instanceof ServerPlayer && level.getGameRules().getBoolean(GameRules.RULE_SHOWDEATHMESSAGES))
 			{
 				ResourceLocation res = getType().getRegistryName();
 				String type;
@@ -99,40 +97,40 @@ public abstract class DyingChestedHorseEntity extends AbstractChestedHorseEntity
 				{
 					type = "generic";
 				}
-				TextComponent msg = new TranslationTextComponent(Main.MODID + ".pet_dying." + type);
+				MutableComponent msg = new TranslatableComponent(Main.MODID + ".pet_dying." + type);
 				if (hasCustomName())
-					msg.func_230529_a_(new StringTextComponent(" ")).func_230529_a_(getCustomName());
+					msg.append(new TextComponent(" ")).append(getCustomName());
 				if (MyConfig.showLoc)
-					msg.func_230529_a_(new StringTextComponent(" " + formatLoc(getPositionVec())));
-				player.sendMessage(msg, player.getUniqueID());
+					msg.append(new TextComponent(" " + formatLoc(position())));
+				player.sendMessage(msg, player.getUUID());
 			}
-			detach();
-			this.dataManager.set(POSE, Pose.DYING);
-			woundedTime = world.getGameTime();
-			woundedTicks = ticksExisted;
-			rotationYaw = renderYawOffset;
-			rotationYawHead = renderYawOffset;
-			rotationPitch = 0.0F;
+			unRide();
+			this.entityData.set(DATA_POSE, Pose.DYING);
+			woundedTime = level.getGameTime();
+			woundedTicks = tickCount;
+			setYRot(yBodyRot);
+			yHeadRot = yBodyRot;
+			setXRot(0.0F);
 		}
 	}
 
 	@Override
-	protected void onDeathUpdate()
+	protected void tickDeath()
 	{
-		if (!isTame())
+		if (!isTamed())
 		{
-			super.onDeathUpdate();
+			super.tickDeath();
 			return;
 		}
 		if (deathTime < 20)
 		{
 			deathTime++;
 			if (deathTime == 10)
-				modifyBoundingBox();
+				reapplyPosition();
 		}
-		else if (!world.isRemote)
+		else if (!level.isClientSide)
 		{
-		    int time = (MyConfig.useWorldTicks) ? (int) (world.getGameTime() - woundedTime) : ticksExisted - woundedTicks;
+		    int time = (MyConfig.useWorldTicks) ? (int) (level.getGameTime() - woundedTime) : tickCount - woundedTicks;
 		    if (time < MyConfig.deathTimer)
 		    	return;
 			if (MyConfig.autoHeal)
@@ -141,145 +139,115 @@ public abstract class DyingChestedHorseEntity extends AbstractChestedHorseEntity
 			}
 			else
 			{
-				super.onDeath(DamageSource.GENERIC);
-				remove();
+				super.die(DamageSource.GENERIC);
+				level.broadcastEntityEvent(this, (byte) 60);
+				remove(RemovalReason.KILLED);
 			}
 		}
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void handleStatusUpdate(byte id)
+	public void handleEntityEvent(byte id)
 	{
 		if (id == 101)
 			cureEntity(null);
 		else {
-			super.handleStatusUpdate(id);
-			if (id == 3 && isTame())
+			super.handleEntityEvent(id);
+			if (id == 3 && isTamed())
 			{
 				deathTime = 19;
-				super.onDeathUpdate();
+				super.tickDeath();
 			}
 		}
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public boolean isDying()
 	{
-		return dataManager.get(POSE) == Pose.DYING && isTame() && !removed;
+		return entityData.get(DATA_POSE) == Pose.DYING && isTamed() && !isRemoved();
 	}
 
 	@Override
-	public ActionResultType dyingInteract(PlayerEntity player, Hand hand)
+	public InteractionResult dyingInteract(Player player, InteractionHand hand)
 	{
 		if (!isDying())
-			return ActionResultType.PASS;
-		ItemStack itemstack = player.getHeldItem(hand);
+			return InteractionResult.PASS;
+		ItemStack itemstack = player.getItemInHand(hand);
 		Item item = itemstack.getItem();
 		if (item == ModItems.PET_BANDAGE || item == ModItems.GOLDEN_PET_BANDAGE)
 		{
-            if (!player.abilities.isCreativeMode) {
+            if (!player.getAbilities().instabuild) {
             	itemstack.shrink(1);
             }
-			if (player instanceof ServerPlayerEntity) {
-				ModTriggers.SAVE_PET.trigger((ServerPlayerEntity) player, this);
+			if (player instanceof ServerPlayer) {
+				ModTriggers.SAVE_PET.trigger((ServerPlayer) player, this);
 				cureEntity(item);
 			}
-			return ActionResultType.func_233537_a_(world.isRemote);
+			return InteractionResult.sidedSuccess(level.isClientSide);
 		}
 		else if (player.isSecondaryUseActive()) {
-			openGUI(player);
-			return ActionResultType.func_233537_a_(world.isRemote);
+			openInventory(player);
+			return InteractionResult.sidedSuccess(level.isClientSide);
 		}
-		return ActionResultType.PASS;
+		return InteractionResult.PASS;
 	}
 
 	void cureEntity(Item item)
 	{
-		if (world.isRemote)
+		if (level.isClientSide)
 		{
 			for (int i = 0; i < 10; ++i) {
-				double d0 = this.rand.nextGaussian() * 0.02D;
-				double d1 = this.rand.nextGaussian() * 0.02D;
-				double d2 = this.rand.nextGaussian() * 0.02D;
-				this.world.addParticle(ParticleTypes.HEART, this.getPosXRandom(1.0D), this.getPosYRandom(),
-						this.getPosZRandom(1.0D), d0, d1, d2);
+				double d0 = this.random.nextGaussian() * 0.02D;
+				double d1 = this.random.nextGaussian() * 0.02D;
+				double d2 = this.random.nextGaussian() * 0.02D;
+				this.level.addParticle(ParticleTypes.HEART, this.getRandomX(1.0D), this.getRandomY(),
+						this.getRandomZ(1.0D), d0, d1, d2);
 			}
 		}
 		else
-			world.setEntityState(this, (byte) 101);
-		setMotion(Vector3d.ZERO);
-		this.dataManager.set(POSE, Pose.STANDING);
+			level.broadcastEntityEvent(this, (byte) 101);
+		setDeltaMovement(Vec3.ZERO);
+		this.entityData.set(DATA_POSE, Pose.STANDING);
 		setHealth(1.0F);
 		deathTime = 0;
-		if (!world.isRemote && isEntityInsideOpaqueBlock())
+		if (!level.isClientSide && isInWall())
 		{
-			super.setPosition(Math.floor(getPosX()) + 0.5, getPosY(), Math.floor(getPosZ()) + 0.5);
-			if (isEntityInsideOpaqueBlock())
+			setPos(Math.floor(getX()) + 0.5, getY(), Math.floor(getZ()) + 0.5);
+			if (isInWall())
 				setHealth(3.0F);
 		}
 		else
-			recenterBoundingBox();
+			reapplyPosition();
 		if (item == ModItems.GOLDEN_PET_BANDAGE)
-			addPotionEffect(new EffectInstance(Effects.REGENERATION, MyConfig.healTime, 1));
+			addEffect(new MobEffectInstance(MobEffects.REGENERATION, MyConfig.healTime, 1));
 	}
 
 	@Override
-	protected boolean isMovementBlocked() {
+	protected boolean isImmobile() {
 		if (isDying())
 			return true;
-		return super.isMovementBlocked();
+		return super.isImmobile();
 	}
 
 	@Override
-	public void setBoundingBox(AxisAlignedBB bb)
+	protected AABB makeBoundingBox()
 	{
-		if (deathTime >= 10)
-		{
-			AxisAlignedBB oldbb = getBoundingBox();
-			dx += bb.minX - oldbb.minX;
-			ay = bb.minY;
-			dz += bb.minZ - oldbb.minZ;
-		}
-		super.setBoundingBox(bb);
+		return (deathTime >= 10) ? dyingBoundingBox() : super.makeBoundingBox();
 	}
 
-	@Override
-	public void setPosition(double x, double y, double z)
+	private AABB dyingBoundingBox()
 	{
-		super.setPosition(x, y, z);
-		if (deathTime >= 10)
-			modifyBoundingBox();
-	}
-
-	@Override
-	public void resetPositionToBB()
-	{
-		if (deathTime >= 10)
-		{
-			setRawPosition(getPosX() + dx, ay, getPosZ() + dz);
-			dx = 0;
-			dz = 0;
-		    if (isAddedToWorld() && !world.isRemote && world instanceof ServerWorld)
-		    	((ServerWorld) world).chunkCheck(this); // Forge - Process chunk registration after moving.
-			return;
-		}
-		super.resetPositionToBB();
-	}
-
-	private void modifyBoundingBox()
-	{
-		double ang = (double) rotationYaw * (Math.PI / 180.0);
-		EntitySize size = getSize(Pose.STANDING);
+		double ang = (double) getYRot() * (Math.PI / 180.0);
+		EntityDimensions size = getDimensions(Pose.STANDING);
 		double width = size.width / 2.0;
 		double length = size.height / 2.0;
 		double lcos = length * Math.cos(ang);
 		double lsin = length * Math.sin(ang);
-		double x0 = getPosX();
+		double x0 = getX();
 		double x1 = x0 + lcos;
-		double y0 = getPosY();
-		double z0 = getPosZ();
+		double y0 = getY();
+		double z0 = getZ();
 		double z1 = z0 + lsin;
 		double hw = (width + length) / 2.0;
 		double xmin = x1 - hw;
@@ -294,9 +262,6 @@ public abstract class DyingChestedHorseEntity extends AbstractChestedHorseEntity
 			zmin = z0;
 		else if (z0 > zmax)
 			zmax = z0;
-		super.setBoundingBox(new AxisAlignedBB(xmin, y0, zmin, xmax, y0 + width, zmax));
-		dx = 0;
-		ay = y0;
-		dz = 0;
+		return new AABB(xmin, y0, zmin, xmax, y0 + width, zmax);
 	}
 }

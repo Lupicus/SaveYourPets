@@ -1,17 +1,17 @@
 package com.lupicus.syp.entity;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.Vec3;
 
 public interface IDying
 {
 	public boolean isDying();
 
-	public ActionResultType dyingInteract(PlayerEntity player, Hand hand);
+	public InteractionResult dyingInteract(Player player, InteractionHand hand);
 
-	default String formatLoc(Vector3d pos)
+	default String formatLoc(Vec3 pos)
 	{
 		return String.format("[%.1f, %.1f, %.1f]", pos.x, pos.y, pos.z);
 	}

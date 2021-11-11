@@ -5,7 +5,7 @@ import com.lupicus.syp.config.MyConfig;
 import com.lupicus.syp.item.ModItems;
 import com.lupicus.syp.item.ModLoot;
 
-import net.minecraft.item.Item;
+import net.minecraft.world.item.Item;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ColorHandlerEvent;

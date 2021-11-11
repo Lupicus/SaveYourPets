@@ -11,11 +11,11 @@ function initializeCoreMod() {
     	'MobEntity': {
     		'target': {
     			'type': 'CLASS',
-    			'name': 'net.minecraft.entity.MobEntity'
+    			'name': 'net.minecraft.world.entity.Mob'
     		},
     		'transformer': function(classNode) {
     			var count = 0
-    			var fn = asmapi.mapMethod('func_184230_a') // processInitialInteract
+    			var fn = asmapi.mapMethod('m_6096_') // interact
     			for (var i = 0; i < classNode.methods.size(); ++i) {
     				var obj = classNode.methods.get(i)
     				if (obj.name == fn) {
@@ -32,8 +32,8 @@ function initializeCoreMod() {
 }
 
 function fix_PII(obj) {
-	var fn = asmapi.mapMethod('func_70089_S') // isAlive
-	node = asmapi.findFirstMethodCall(obj, asmapi.MethodType.VIRTUAL, "net/minecraft/entity/MobEntity", fn, "()Z")
+	var fn = asmapi.mapMethod('m_6084_') // isAlive
+	node = asmapi.findFirstMethodCall(obj, asmapi.MethodType.VIRTUAL, "net/minecraft/world/entity/Mob", fn, "()Z")
 	if (node) {
 		var node2 = node.getNext()
 		node2 = node2.getNext()
@@ -46,7 +46,7 @@ function fix_PII(obj) {
 		var op4 = new VarInsnNode(opc.ALOAD, 0)
 		var op5 = new VarInsnNode(opc.ALOAD, 1)
 		var op6 = new VarInsnNode(opc.ALOAD, 2)
-		var op7 = asmapi.buildMethodCall("com/lupicus/syp/entity/IDying", "dyingInteract", "(Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/util/Hand;)Lnet/minecraft/util/ActionResultType;", asmapi.MethodType.INTERFACE)
+		var op7 = asmapi.buildMethodCall("com/lupicus/syp/entity/IDying", "dyingInteract", "(Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/world/InteractionHand;)Lnet/minecraft/world/InteractionResult;", asmapi.MethodType.INTERFACE)
 		var op8 = new InsnNode(opc.ARETURN)
 		var list = asmapi.listOf(op1, op2, op3, op4, op5, op6, op7, op8, op9)
 		obj.instructions.insertBefore(node2, list)

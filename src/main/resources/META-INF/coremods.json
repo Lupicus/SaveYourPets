@@ -1,6 +1,6 @@
 {
 	"MobEntity": "asm/MobEntity.js",
-	"HorseInventoryContainer": "asm/HorseInventoryContainer.js",
+	"HorseInventoryMenu": "asm/HorseInventoryMenu.js",
 	"WolfEntity": "asm/WolfEntity.js",
 	"CatEntity": "asm/CatEntity.js",
 	"HorseEntity": "asm/HorseEntity.js",

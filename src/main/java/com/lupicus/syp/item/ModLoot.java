@@ -1,25 +1,25 @@
 package com.lupicus.syp.item;
 
-import net.minecraft.loot.ConstantRange;
-import net.minecraft.loot.EmptyLootEntry;
-import net.minecraft.loot.ItemLootEntry;
-import net.minecraft.loot.LootPool;
-import net.minecraft.loot.LootTable;
-import net.minecraft.loot.LootTableManager;
-import net.minecraft.loot.LootTables;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.storage.loot.BuiltInLootTables;
+import net.minecraft.world.level.storage.loot.LootPool;
+import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.loot.LootTables;
+import net.minecraft.world.level.storage.loot.entries.EmptyLootItem;
+import net.minecraft.world.level.storage.loot.entries.LootItem;
+import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 
 public class ModLoot
 {
-	public static void addLoot(ResourceLocation res, LootTable lootTable, LootTableManager lootTableManager)
+	public static void addLoot(ResourceLocation res, LootTable lootTable, LootTables lootTableManager)
 	{
-		if (res.equals(LootTables.CHESTS_VILLAGE_VILLAGE_SHEPHERD))
+		if (res.equals(BuiltInLootTables.VILLAGE_SHEPHERD))
 		{
-			LootPool pool = LootPool.builder().name("pet_bandage")
-					.rolls(new ConstantRange(1))
-					.addEntry(ItemLootEntry.builder(ModItems.PET_BANDAGE).weight(50))
-					.addEntry(ItemLootEntry.builder(ModItems.GOLDEN_PET_BANDAGE).weight(30))
-					.addEntry(EmptyLootEntry.func_216167_a().weight(20))
+			LootPool pool = LootPool.lootPool().name("pet_bandage")
+					.setRolls(ConstantValue.exactly(1.0f))
+					.add(LootItem.lootTableItem(ModItems.PET_BANDAGE).setWeight(50))
+					.add(LootItem.lootTableItem(ModItems.GOLDEN_PET_BANDAGE).setWeight(30))
+					.add(EmptyLootItem.emptyItem().setWeight(20))
 					.build();
 			lootTable.addPool(pool);
 		}

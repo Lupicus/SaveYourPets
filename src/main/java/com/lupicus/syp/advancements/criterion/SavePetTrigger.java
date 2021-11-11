@@ -3,17 +3,17 @@ package com.lupicus.syp.advancements.criterion;
 import com.google.gson.JsonObject;
 import com.lupicus.syp.Main;
 
-import net.minecraft.advancements.criterion.AbstractCriterionTrigger;
-import net.minecraft.advancements.criterion.CriterionInstance;
-import net.minecraft.advancements.criterion.EntityPredicate;
-import net.minecraft.entity.passive.AnimalEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.loot.ConditionArrayParser;
-import net.minecraft.loot.ConditionArraySerializer;
-import net.minecraft.loot.LootContext;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.advancements.critereon.AbstractCriterionTriggerInstance;
+import net.minecraft.advancements.critereon.DeserializationContext;
+import net.minecraft.advancements.critereon.EntityPredicate;
+import net.minecraft.advancements.critereon.SerializationContext;
+import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.animal.Animal;
+import net.minecraft.world.level.storage.loot.LootContext;
 
-public class SavePetTrigger extends AbstractCriterionTrigger<SavePetTrigger.Instance>
+public class SavePetTrigger extends SimpleCriterionTrigger<SavePetTrigger.Instance>
 {
 	private static final ResourceLocation ID = new ResourceLocation(Main.MODID, "save_pet");
 
@@ -23,42 +23,42 @@ public class SavePetTrigger extends AbstractCriterionTrigger<SavePetTrigger.Inst
 	}
 
 	@Override
-	public Instance func_230241_b_(JsonObject json, EntityPredicate.AndPredicate predicate, ConditionArrayParser parser) {
-		EntityPredicate.AndPredicate entitypredicate = EntityPredicate.AndPredicate.func_234587_a_(json, "entity", parser);
+	public SavePetTrigger.Instance createInstance(JsonObject json, EntityPredicate.Composite predicate, DeserializationContext parser) {
+		EntityPredicate.Composite entitypredicate = EntityPredicate.Composite.fromJson(json, "entity", parser);
 		return new SavePetTrigger.Instance(predicate, entitypredicate);
 	}
 
-	public void trigger(ServerPlayerEntity player, AnimalEntity entity) {
-		LootContext lootcontext = EntityPredicate.func_234575_b_(player, entity);
-		this.func_235959_a_(player, (p_227251_1_) -> {
-			return p_227251_1_.func_236323_a_(lootcontext);
+	public void trigger(ServerPlayer player, Animal entity) {
+		LootContext lootcontext = EntityPredicate.createContext(player, entity);
+		this.trigger(player, (p_227251_1_) -> {
+			return p_227251_1_.matches(lootcontext);
 		});
 	}
 
-	public static class Instance extends CriterionInstance {
-		private final EntityPredicate.AndPredicate entity;
+	public static class Instance extends AbstractCriterionTriggerInstance {
+		private final EntityPredicate.Composite entity;
 
-		public Instance(EntityPredicate.AndPredicate predicate, EntityPredicate.AndPredicate entity) {
+		public Instance(EntityPredicate.Composite predicate, EntityPredicate.Composite entity) {
 			super(SavePetTrigger.ID, predicate);
 			this.entity = entity;
 		}
 
 		public static SavePetTrigger.Instance any() {
-			return new SavePetTrigger.Instance(EntityPredicate.AndPredicate.field_234582_a_, EntityPredicate.AndPredicate.field_234582_a_);
+			return new SavePetTrigger.Instance(EntityPredicate.Composite.ANY, EntityPredicate.Composite.ANY);
 		}
 
 		public static SavePetTrigger.Instance create(EntityPredicate predicate) {
-			return new SavePetTrigger.Instance(EntityPredicate.AndPredicate.field_234582_a_, EntityPredicate.AndPredicate.func_234585_a_(predicate));
+			return new SavePetTrigger.Instance(EntityPredicate.Composite.ANY, EntityPredicate.Composite.wrap(predicate));
 		}
 
-		public boolean func_236323_a_(LootContext lootcontext) {
-			return this.entity.func_234588_a_(lootcontext);
+		public boolean matches(LootContext lootcontext) {
+			return this.entity.matches(lootcontext);
 		}
 
 		@Override
-		public JsonObject func_230240_a_(ConditionArraySerializer serializer) {
-			JsonObject jsonobject = super.func_230240_a_(serializer);
-			jsonobject.add("entity", this.entity.func_234586_a_(serializer));
+		public JsonObject serializeToJson(SerializationContext serializer) {
+			JsonObject jsonobject = super.serializeToJson(serializer);
+			jsonobject.add("entity", this.entity.toJson(serializer));
 			return jsonobject;
 		}
 	}

@@ -9,14 +9,14 @@ var FieldInsnNode = Java.type('org.objectweb.asm.tree.FieldInsnNode')
 
 function initializeCoreMod() {
     return {
-    	'HorseInventoryContainer': {
+    	'HorseInventoryMenu': {
     		'target': {
     			'type': 'CLASS',
-    			'name': 'net.minecraft.inventory.container.HorseInventoryContainer'
+    			'name': 'net.minecraft.world.inventory.HorseInventoryMenu'
     		},
     		'transformer': function(classNode) {
     			var count = 0
-    			var fn = asmapi.mapMethod('func_75145_c') // canInteractWith
+    			var fn = asmapi.mapMethod('m_6875_') // stillValid
     			for (var i = 0; i < classNode.methods.size(); ++i) {
     				var obj = classNode.methods.get(i)
     				if (obj.name == fn) {
@@ -25,7 +25,7 @@ function initializeCoreMod() {
     				}
     			}
     			if (count < 1)
-    				asmapi.log("ERROR", "Failed to modify HorseInventoryContainer: Method not found")
+    				asmapi.log("ERROR", "Failed to modify HorseInventoryMenu: Method not found")
     			return classNode
     		}
     	}
@@ -33,20 +33,20 @@ function initializeCoreMod() {
 }
 
 function fix_CIW(obj) {
-	var fn = asmapi.mapMethod('func_70089_S') // isAlive
-	node = asmapi.findFirstMethodCall(obj, asmapi.MethodType.VIRTUAL, "net/minecraft/entity/passive/horse/AbstractHorseEntity", fn, "()Z")
+	var fn = asmapi.mapMethod('m_6084_') // isAlive
+	node = asmapi.findFirstMethodCall(obj, asmapi.MethodType.VIRTUAL, "net/minecraft/world/entity/animal/horse/AbstractHorse", fn, "()Z")
 	if (node) {
-		var fld = asmapi.mapField('field_111242_f') // horse
+		var fld = asmapi.mapField('f_39654_') // horse
 		var node2 = node.getNext()
 		var label2 = node2.label
 		var op10 = new LabelNode()
 		var op1 = new JumpInsnNode(opc.IFNE, op10)
 		var op2 = new VarInsnNode(opc.ALOAD, 0)
-		var op3 = new FieldInsnNode(opc.GETFIELD, "net/minecraft/inventory/container/HorseInventoryContainer", fld, "Lnet/minecraft/entity/passive/horse/AbstractHorseEntity;")
+		var op3 = new FieldInsnNode(opc.GETFIELD, "net/minecraft/world/inventory/HorseInventoryMenu", fld, "Lnet/minecraft/world/entity/animal/horse/AbstractHorse;")
 		var op4 = new TypeInsnNode(opc.INSTANCEOF, "com/lupicus/syp/entity/IDying")
 		var op5 = new JumpInsnNode(opc.IFEQ, label2)
 		var op6 = new VarInsnNode(opc.ALOAD, 0)
-		var op7 = new FieldInsnNode(opc.GETFIELD, "net/minecraft/inventory/container/HorseInventoryContainer", fld, "Lnet/minecraft/entity/passive/horse/AbstractHorseEntity;")
+		var op7 = new FieldInsnNode(opc.GETFIELD, "net/minecraft/world/inventory/HorseInventoryMenu", fld, "Lnet/minecraft/world/entity/animal/horse/AbstractHorse;")
 		var op8 = asmapi.buildMethodCall("com/lupicus/syp/entity/IDying", "isDying", "()Z", asmapi.MethodType.INTERFACE)
 		var op9 = new JumpInsnNode(opc.IFEQ, label2)
 		var list = asmapi.listOf(op1, op2, op3, op4, op5, op6, op7, op8, op9, op10)
