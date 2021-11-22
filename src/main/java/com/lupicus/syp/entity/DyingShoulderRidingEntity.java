@@ -18,6 +18,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
+import net.minecraft.stats.Stats;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
@@ -173,6 +174,7 @@ public abstract class DyingShoulderRidingEntity extends ShoulderRidingEntity imp
 		Item item = itemstack.getItem();
 		if (item == ModItems.PET_BANDAGE || item == ModItems.GOLDEN_PET_BANDAGE)
 		{
+			player.addStat(Stats.ITEM_USED.get(item));
             if (!player.abilities.isCreativeMode) {
             	itemstack.shrink(1);
             }
