@@ -12,6 +12,7 @@ import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
@@ -171,6 +172,7 @@ public abstract class DyingShoulderRidingEntity extends ShoulderRidingEntity imp
 		Item item = itemstack.getItem();
 		if (item == ModItems.PET_BANDAGE || item == ModItems.GOLDEN_PET_BANDAGE)
 		{
+			player.awardStat(Stats.ITEM_USED.get(item));
             if (!player.getAbilities().instabuild) {
             	itemstack.shrink(1);
             }
