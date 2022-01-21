@@ -1,10 +1,13 @@
 package com.lupicus.syp.entity;
 
+import java.util.UUID;
+
 import com.lupicus.syp.Main;
 import com.lupicus.syp.advancements.ModTriggers;
 import com.lupicus.syp.config.MyConfig;
 import com.lupicus.syp.item.ModItems;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -14,6 +17,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.potion.EffectInstance;
@@ -38,6 +42,8 @@ public abstract class DyingEntity extends TameableEntity implements IDying
 {
 	protected long woundedTime;
 	protected int woundedTicks;
+	protected UUID killerUUID;
+	protected UUID scoreUUID;
 	double dx, ay, dz;
 
 	protected DyingEntity(EntityType<? extends TameableEntity> type, World worldIn) {
@@ -55,6 +61,10 @@ public abstract class DyingEntity extends TameableEntity implements IDying
 				woundedTicks -= compound.getInt("WoundedTicks");
 			else
 				woundedTicks -= (int) (world.getGameTime() - woundedTime);
+			if (compound.hasUniqueId("sypKiller"))
+				killerUUID = compound.getUniqueId("sypKiller");
+			if (compound.hasUniqueId("sypScore"))
+				scoreUUID = compound.getUniqueId("sypScore");
 			dataManager.set(POSE, Pose.DYING);
 			setHealth(0.0F);
 			deathTime = 20;
@@ -68,6 +78,10 @@ public abstract class DyingEntity extends TameableEntity implements IDying
 		{
 			compound.putLong("WoundedTime", woundedTime);
 			compound.putInt("WoundedTicks", ticksExisted - woundedTicks);
+			if (killerUUID != null)
+				compound.putUniqueId("sypKiller", killerUUID);
+			if (scoreUUID != null)
+				compound.putUniqueId("sypScore", scoreUUID);
 		}
 	}
 
@@ -101,9 +115,15 @@ public abstract class DyingEntity extends TameableEntity implements IDying
 					msg.func_230529_a_(new StringTextComponent(" " + formatLoc(getPositionVec())));
 				player.sendMessage(msg, player.getUniqueID());
 			}
-			this.dataManager.set(POSE, Pose.DYING);
+			dataManager.set(POSE, Pose.DYING);
 			woundedTime = world.getGameTime();
 			woundedTicks = ticksExisted;
+			Entity entity = cause.getTrueSource();
+			if (entity instanceof ServerPlayerEntity)
+				killerUUID = entity.getUniqueID();
+			LivingEntity le = getAttackingEntity();
+			if (le instanceof ServerPlayerEntity)
+				scoreUUID = le.getUniqueID();
 			rotationYaw = renderYawOffset;
 			rotationYawHead = renderYawOffset;
 			rotationPitch = 0.0F;
@@ -126,19 +146,35 @@ public abstract class DyingEntity extends TameableEntity implements IDying
 		}
 		else if (!world.isRemote)
 		{
-		    int time = (MyConfig.useWorldTicks) ? (int) (world.getGameTime() - woundedTime) : ticksExisted - woundedTicks;
-		    if (time < MyConfig.deathTimer)
-		    	return;
+			int time = (MyConfig.useWorldTicks) ? (int) (world.getGameTime() - woundedTime) : ticksExisted - woundedTicks;
+			if (time < MyConfig.deathTimer)
+				return;
 			if (MyConfig.autoHeal)
 			{
 				cureEntity(ModItems.GOLDEN_PET_BANDAGE);
 			}
 			else
 			{
-				super.onDeath(DamageSource.GENERIC);
-				remove();
+				killEntity();
 			}
 		}
+	}
+
+	void killEntity()
+	{
+		if (scoreUUID != null)
+		{
+			attackingPlayer = world.getPlayerByUuid(scoreUUID);
+		}
+		DamageSource ds = DamageSource.GENERIC;
+		if (killerUUID != null)
+		{
+			PlayerEntity aPlayer = world.getPlayerByUuid(killerUUID);
+			if (aPlayer != null)
+				ds = DamageSource.causePlayerDamage(aPlayer);
+		}
+		super.onDeath(ds);
+		remove();
 	}
 
 	@OnlyIn(Dist.CLIENT)
@@ -174,12 +210,24 @@ public abstract class DyingEntity extends TameableEntity implements IDying
 		if (item == ModItems.PET_BANDAGE || item == ModItems.GOLDEN_PET_BANDAGE)
 		{
 			player.addStat(Stats.ITEM_USED.get(item));
-            if (!player.abilities.isCreativeMode) {
-            	itemstack.shrink(1);
-            }
+			if (!player.abilities.isCreativeMode) {
+				itemstack.shrink(1);
+			}
 			if (player instanceof ServerPlayerEntity) {
 				ModTriggers.SAVE_PET.trigger((ServerPlayerEntity) player, this);
 				cureEntity(item);
+			}
+			return ActionResultType.func_233537_a_(world.isRemote);
+		}
+		else if (item == Items.POISONOUS_POTATO)
+		{
+			player.addStat(Stats.ITEM_USED.get(item));
+			if (!player.abilities.isCreativeMode) {
+				itemstack.shrink(1);
+			}
+			if (player instanceof ServerPlayerEntity) {
+				killerUUID = player.getUniqueID();
+				killEntity();
 			}
 			return ActionResultType.func_233537_a_(world.isRemote);
 		}
@@ -190,18 +238,20 @@ public abstract class DyingEntity extends TameableEntity implements IDying
 	{
 		if (world.isRemote)
 		{
-			for (int i = 0; i < 10; ++i) {
+			for (int i = 0; i < 7; ++i) {
 				double d0 = this.rand.nextGaussian() * 0.02D;
 				double d1 = this.rand.nextGaussian() * 0.02D;
 				double d2 = this.rand.nextGaussian() * 0.02D;
-				this.world.addParticle(ParticleTypes.HEART, this.getPosXRandom(1.0D), this.getPosYRandom(),
+				this.world.addParticle(ParticleTypes.HEART, this.getPosXRandom(1.0D), this.getPosYRandom() + 0.5D,
 						this.getPosZRandom(1.0D), d0, d1, d2);
 			}
 		}
 		else
 			world.setEntityState(this, (byte) 101);
 		setMotion(Vector3d.ZERO);
-		this.dataManager.set(POSE, Pose.STANDING);
+		dataManager.set(POSE, Pose.STANDING);
+		killerUUID = null;
+		scoreUUID = null;
 		setHealth(1.0F);
 		deathTime = 0;
 		if (!world.isRemote && isEntityInsideOpaqueBlock())
