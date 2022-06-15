@@ -1,16 +1,17 @@
 package com.lupicus.syp;
 
+import org.jetbrains.annotations.NotNull;
+
 import com.lupicus.syp.advancements.ModTriggers;
 import com.lupicus.syp.config.MyConfig;
 import com.lupicus.syp.item.ModItems;
 import com.lupicus.syp.item.ModLoot;
 
-import net.minecraft.world.item.Item;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.event.LootTableLoadEvent;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -18,6 +19,8 @@ import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegisterEvent;
 
 @Mod(Main.MODID)
 public class Main
@@ -46,17 +49,13 @@ public class Main
     public static class ModEvents
     {
 	    @SubscribeEvent
-	    public static void onItemsRegistry(final RegistryEvent.Register<Item> event)
+	    public static void onRegister(final RegisterEvent event)
 	    {
-	        ModItems.register(event.getRegistry());
+	    	@NotNull
+			ResourceKey<? extends Registry<?>> key = event.getRegistryKey();
+	    	if (key.equals(ForgeRegistries.Keys.ITEMS))
+	    		ModItems.register(event.getForgeRegistry());
 	    }
-
-        @OnlyIn(Dist.CLIENT)
-        @SubscribeEvent
-        public static void onColorsRegistry(final ColorHandlerEvent.Item event)
-        {
-        	ModItems.register(event.getItemColors());
-        }
     }
 
 	@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE)

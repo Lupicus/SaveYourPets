@@ -9,9 +9,8 @@ import com.lupicus.syp.item.ModItems;
 
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
@@ -94,7 +93,7 @@ public abstract class DyingEntity extends TamableAnimal implements IDying
 			LivingEntity player = getOwner();
 			if (player instanceof ServerPlayer && level.getGameRules().getBoolean(GameRules.RULE_SHOWDEATHMESSAGES))
 			{
-				ResourceLocation res = getType().getRegistryName();
+				ResourceLocation res = EntityType.getKey(getType());
 				String type;
 				if (res.getNamespace().equals("minecraft"))
 				{
@@ -104,12 +103,12 @@ public abstract class DyingEntity extends TamableAnimal implements IDying
 				{
 					type = "generic";
 				}
-				MutableComponent msg = new TranslatableComponent(Main.MODID + ".pet_dying." + type);
+				MutableComponent msg = Component.translatable(Main.MODID + ".pet_dying." + type);
 				if (hasCustomName())
-					msg.append(new TextComponent(" ")).append(getCustomName());
+					msg.append(Component.literal(" ")).append(getCustomName());
 				if (MyConfig.showLoc)
-					msg.append(new TextComponent(" " + formatLoc(position())));
-				player.sendMessage(msg, player.getUUID());
+					msg.append(Component.literal(" " + formatLoc(position())));
+				player.sendSystemMessage(msg);
 			}
 			entityData.set(DATA_POSE, Pose.DYING);
 			woundedTime = level.getGameTime();
