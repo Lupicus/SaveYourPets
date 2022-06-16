@@ -1,0 +1,16 @@
+{
+	"item.syp.pet_bandage": "Пов'язка для тварин",
+	"item.syp.golden_pet_bandage": "Золота Пов'язка для тварин",
+	"advancements.husbandry.syp.save_pet.title": "Домашній Спаситель",
+	"advancements.husbandry.syp.save_pet.description": "Врятуйте домашнього улюбленця від смерті",
+	"advancements.husbandry.syp.save_all_pets.title": "тваринний лікар",
+	"advancements.husbandry.syp.save_all_pets.description": "Врятуйте всі типи домашніх тварин від смерті!",
+	"syp.pet_dying.wolf": "Ваш домашній вовк помирає!",
+	"syp.pet_dying.cat": "Ваш домашній кіт помирає!",
+	"syp.pet_dying.horse": "Ваш домашній кінь помирає!",
+	"syp.pet_dying.donkey": "Ваш домашній осел помирає!",
+	"syp.pet_dying.mule": "Ваш домашній мул помирає!",
+	"syp.pet_dying.llama": "Ваша лама помирає!",
+	"syp.pet_dying.parrot": "Ваш домашній папуга помирає!",
+	"syp.pet_dying.generic": "Ваш вихованець помирає!"
+}

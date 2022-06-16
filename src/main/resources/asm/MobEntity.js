@@ -33,7 +33,7 @@ function initializeCoreMod() {
 
 function fix_PII(obj) {
 	var fn = asmapi.mapMethod('m_6084_') // isAlive
-	node = asmapi.findFirstMethodCall(obj, asmapi.MethodType.VIRTUAL, "net/minecraft/world/entity/Mob", fn, "()Z")
+	var node = asmapi.findFirstMethodCall(obj, asmapi.MethodType.VIRTUAL, "net/minecraft/world/entity/Mob", fn, "()Z")
 	if (node) {
 		var node2 = node.getNext()
 		node2 = node2.getNext()

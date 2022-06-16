@@ -34,7 +34,7 @@ function initializeCoreMod() {
 
 function fix_CIW(obj) {
 	var fn = asmapi.mapMethod('m_6084_') // isAlive
-	node = asmapi.findFirstMethodCall(obj, asmapi.MethodType.VIRTUAL, "net/minecraft/world/entity/animal/horse/AbstractHorse", fn, "()Z")
+	var node = asmapi.findFirstMethodCall(obj, asmapi.MethodType.VIRTUAL, "net/minecraft/world/entity/animal/horse/AbstractHorse", fn, "()Z")
 	if (node) {
 		var fld = asmapi.mapField('f_39654_') // horse
 		var node2 = node.getNext()
