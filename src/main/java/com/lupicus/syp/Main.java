@@ -5,12 +5,10 @@ import com.lupicus.syp.config.MyConfig;
 import com.lupicus.syp.item.ModItems;
 import com.lupicus.syp.item.ModLoot;
 
-import net.minecraft.world.item.Item;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.event.LootTableLoadEvent;
-import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -26,8 +24,10 @@ public class Main
 
     public Main()
     {
-    	FMLJavaModLoadingContext.get().getModEventBus().register(this);
+		IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
+		bus.register(this);
 		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, MyConfig.COMMON_SPEC);
+		ModItems.register(bus);
     }
 
 	@SubscribeEvent
@@ -41,23 +41,6 @@ public class Main
 	public void setupClient(final FMLClientSetupEvent event)
     {
 	}
-
-    @Mod.EventBusSubscriber(bus=Mod.EventBusSubscriber.Bus.MOD)
-    public static class ModEvents
-    {
-	    @SubscribeEvent
-	    public static void onItemsRegistry(final RegistryEvent.Register<Item> event)
-	    {
-	        ModItems.register(event.getRegistry());
-	    }
-
-        @OnlyIn(Dist.CLIENT)
-        @SubscribeEvent
-        public static void onColorsRegistry(final ColorHandlerEvent.Item event)
-        {
-        	ModItems.register(event.getItemColors());
-        }
-    }
 
 	@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE)
 	public static class ForgeEvents
