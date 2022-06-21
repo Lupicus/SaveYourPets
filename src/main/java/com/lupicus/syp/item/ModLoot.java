@@ -17,8 +17,8 @@ public class ModLoot
 		{
 			LootPool pool = LootPool.lootPool().name("pet_bandage")
 					.setRolls(ConstantValue.exactly(1.0f))
-					.add(LootItem.lootTableItem(ModItems.PET_BANDAGE).setWeight(50))
-					.add(LootItem.lootTableItem(ModItems.GOLDEN_PET_BANDAGE).setWeight(30))
+					.add(LootItem.lootTableItem(ModItems.PET_BANDAGE.get()).setWeight(50))
+					.add(LootItem.lootTableItem(ModItems.GOLDEN_PET_BANDAGE.get()).setWeight(30))
 					.add(EmptyLootItem.emptyItem().setWeight(20))
 					.build();
 			lootTable.addPool(pool);

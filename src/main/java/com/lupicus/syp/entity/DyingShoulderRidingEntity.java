@@ -9,9 +9,9 @@ import com.lupicus.syp.item.ModItems;
 
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.ChatType;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
@@ -34,6 +34,7 @@ import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public abstract class DyingShoulderRidingEntity extends ShoulderRidingEntity implements IDying
 {
@@ -94,7 +95,7 @@ public abstract class DyingShoulderRidingEntity extends ShoulderRidingEntity imp
 			LivingEntity player = getOwner();
 			if (player instanceof ServerPlayer && level.getGameRules().getBoolean(GameRules.RULE_SHOWDEATHMESSAGES))
 			{
-				ResourceLocation res = getType().getRegistryName();
+				ResourceLocation res = ForgeRegistries.ENTITIES.getKey(getType());
 				String type;
 				if (res.getNamespace().equals("minecraft"))
 				{
@@ -104,12 +105,12 @@ public abstract class DyingShoulderRidingEntity extends ShoulderRidingEntity imp
 				{
 					type = "generic";
 				}
-				MutableComponent msg = new TranslatableComponent(Main.MODID + ".pet_dying." + type);
+				MutableComponent msg = Component.translatable(Main.MODID + ".pet_dying." + type);
 				if (hasCustomName())
-					msg.append(new TextComponent(" ")).append(getCustomName());
+					msg.append(Component.literal(" ")).append(getCustomName());
 				if (MyConfig.showLoc)
-					msg.append(new TextComponent(" " + formatLoc(position())));
-				player.sendMessage(msg, player.getUUID());
+					msg.append(Component.literal(" " + formatLoc(position())));
+				((ServerPlayer) player).sendSystemMessage(msg, ChatType.SYSTEM);
 			}
 			setDeltaMovement(Vec3.ZERO);
 			entityData.set(DATA_POSE, Pose.DYING);
@@ -148,7 +149,7 @@ public abstract class DyingShoulderRidingEntity extends ShoulderRidingEntity imp
 				return;
 			if (MyConfig.autoHeal)
 			{
-				cureEntity(ModItems.GOLDEN_PET_BANDAGE);
+				cureEntity(ModItems.GOLDEN_PET_BANDAGE.get());
 			}
 			else
 			{
@@ -198,7 +199,7 @@ public abstract class DyingShoulderRidingEntity extends ShoulderRidingEntity imp
 			return InteractionResult.PASS;
 		ItemStack itemstack = player.getItemInHand(hand);
 		Item item = itemstack.getItem();
-		if (item == ModItems.PET_BANDAGE || item == ModItems.GOLDEN_PET_BANDAGE)
+		if (item == ModItems.PET_BANDAGE.get() || item == ModItems.GOLDEN_PET_BANDAGE.get())
 		{
 			player.awardStat(Stats.ITEM_USED.get(item));
 			if (!player.getAbilities().instabuild) {
@@ -253,7 +254,7 @@ public abstract class DyingShoulderRidingEntity extends ShoulderRidingEntity imp
 		}
 		else
 			reapplyPosition();
-		if (item == ModItems.GOLDEN_PET_BANDAGE)
+		if (item == ModItems.GOLDEN_PET_BANDAGE.get())
 			addEffect(new MobEffectInstance(MobEffects.REGENERATION, MyConfig.healTime, 1));
 	}
 
