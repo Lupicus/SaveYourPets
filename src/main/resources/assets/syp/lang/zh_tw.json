@@ -1,0 +1,16 @@
+{
+	"item.syp.pet_bandage": "宠物绷带",
+	"item.syp.golden_pet_bandage": "黄金宠物绷带",
+	"advancements.husbandry.syp.save_pet.title": "宠物救星",
+	"advancements.husbandry.syp.save_pet.description": "拯救一只宠物免于死亡",
+	"advancements.husbandry.syp.save_all_pets.title": "宠物医生",
+	"advancements.husbandry.syp.save_all_pets.description": "拯救所有类型的宠物免于死亡！",
+	"syp.pet_dying.wolf": "你的宠物狼快死了！",
+	"syp.pet_dying.cat": "你的宠物猫快死了！",
+	"syp.pet_dying.horse": "你的宠物马快死了！",
+	"syp.pet_dying.donkey": "你的宠物驴快死了！",
+	"syp.pet_dying.mule": "你的宠物骡子快死了！",
+	"syp.pet_dying.llama": "你的宠物骆驼快死了！",
+	"syp.pet_dying.parrot": "你的宠物鹦鹉快死了！",
+	"syp.pet_dying.generic": "你的宠物快死了！"
+}
