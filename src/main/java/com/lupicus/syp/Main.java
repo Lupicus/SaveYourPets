@@ -11,6 +11,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.event.CreativeModeTabEvent;
 import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -55,6 +56,12 @@ public class Main
 			ResourceKey<? extends Registry<?>> key = event.getRegistryKey();
 	    	if (key.equals(ForgeRegistries.Keys.ITEMS))
 	    		ModItems.register(event.getForgeRegistry());
+	    }
+
+	    @SubscribeEvent
+	    public static void onCreativeTab(CreativeModeTabEvent.BuildContents event)
+	    {
+	    	ModItems.setupTabs(event);
 	    }
     }
 

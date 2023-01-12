@@ -264,7 +264,7 @@ public abstract class DyingHorseEntity extends AbstractHorse implements IDying
 	}
 
 	@Override
-	protected boolean isImmobile() {
+	public boolean isImmobile() {
 		if (isDying())
 			return true;
 		return super.isImmobile();

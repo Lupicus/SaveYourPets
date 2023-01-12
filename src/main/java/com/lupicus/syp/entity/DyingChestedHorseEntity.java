@@ -266,7 +266,7 @@ public abstract class DyingChestedHorseEntity extends AbstractChestedHorse imple
 	}
 
 	@Override
-	protected boolean isImmobile() {
+	public boolean isImmobile() {
 		if (isDying())
 			return true;
 		return super.isImmobile();
