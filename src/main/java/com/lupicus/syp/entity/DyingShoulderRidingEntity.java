@@ -111,7 +111,8 @@ public abstract class DyingShoulderRidingEntity extends ShoulderRidingEntity imp
 					msg.append(new TextComponent(" " + formatLoc(position())));
 				player.sendMessage(msg, player.getUUID());
 			}
-			setDeltaMovement(Vec3.ZERO);
+			setNoGravity(false);
+			setYya(0.0F);
 			entityData.set(DATA_POSE, Pose.DYING);
 			woundedTime = level.getGameTime();
 			woundedTicks = tickCount;
