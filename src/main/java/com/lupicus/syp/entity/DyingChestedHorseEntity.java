@@ -90,10 +90,7 @@ public abstract class DyingChestedHorseEntity extends AbstractChestedHorse imple
 		}
 		if (!isDying())
 		{
-			Player player = null;
-			UUID uuid = getOwnerUUID();
-			if (uuid != null)
-				player = level.getPlayerByUUID(uuid);
+			LivingEntity player = getOwner();
 			if (player instanceof ServerPlayer && level.getGameRules().getBoolean(GameRules.RULE_SHOWDEATHMESSAGES))
 			{
 				ResourceLocation res = EntityType.getKey(getType());
@@ -167,12 +164,12 @@ public abstract class DyingChestedHorseEntity extends AbstractChestedHorse imple
 		{
 			lastHurtByPlayer = level.getPlayerByUUID(scoreUUID);
 		}
-		DamageSource ds = DamageSource.GENERIC;
+		DamageSource ds = damageSources().generic();
 		if (killerUUID != null)
 		{
 			Player aPlayer = level.getPlayerByUUID(killerUUID);
 			if (aPlayer != null)
-				ds = DamageSource.playerAttack(aPlayer);
+				ds = damageSources().playerAttack(aPlayer);
 		}
 		super.die(ds);
 		deathTime = 19;

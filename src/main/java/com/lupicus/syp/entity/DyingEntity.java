@@ -161,12 +161,12 @@ public abstract class DyingEntity extends TamableAnimal implements IDying
 		{
 			lastHurtByPlayer = level.getPlayerByUUID(scoreUUID);
 		}
-		DamageSource ds = DamageSource.GENERIC;
+		DamageSource ds = damageSources().generic();
 		if (killerUUID != null)
 		{
 			Player aPlayer = level.getPlayerByUUID(killerUUID);
 			if (aPlayer != null)
-				ds = DamageSource.playerAttack(aPlayer);
+				ds = damageSources().playerAttack(aPlayer);
 		}
 		super.die(ds);
 		deathTime = 19;
