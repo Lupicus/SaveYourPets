@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import com.lupicus.syp.Main;
 
 import net.minecraft.advancements.critereon.AbstractCriterionTriggerInstance;
+import net.minecraft.advancements.critereon.ContextAwarePredicate;
 import net.minecraft.advancements.critereon.DeserializationContext;
 import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.advancements.critereon.SerializationContext;
@@ -23,8 +24,8 @@ public class SavePetTrigger extends SimpleCriterionTrigger<SavePetTrigger.Instan
 	}
 
 	@Override
-	public SavePetTrigger.Instance createInstance(JsonObject json, EntityPredicate.Composite predicate, DeserializationContext parser) {
-		EntityPredicate.Composite entitypredicate = EntityPredicate.Composite.fromJson(json, "entity", parser);
+	public SavePetTrigger.Instance createInstance(JsonObject json, ContextAwarePredicate predicate, DeserializationContext parser) {
+		ContextAwarePredicate entitypredicate = EntityPredicate.fromJson(json, "entity", parser);
 		return new SavePetTrigger.Instance(predicate, entitypredicate);
 	}
 
@@ -36,19 +37,19 @@ public class SavePetTrigger extends SimpleCriterionTrigger<SavePetTrigger.Instan
 	}
 
 	public static class Instance extends AbstractCriterionTriggerInstance {
-		private final EntityPredicate.Composite entity;
+		private final ContextAwarePredicate entity;
 
-		public Instance(EntityPredicate.Composite predicate, EntityPredicate.Composite entity) {
+		public Instance(ContextAwarePredicate predicate, ContextAwarePredicate entity) {
 			super(SavePetTrigger.ID, predicate);
 			this.entity = entity;
 		}
 
 		public static SavePetTrigger.Instance any() {
-			return new SavePetTrigger.Instance(EntityPredicate.Composite.ANY, EntityPredicate.Composite.ANY);
+			return new SavePetTrigger.Instance(ContextAwarePredicate.ANY, ContextAwarePredicate.ANY);
 		}
 
 		public static SavePetTrigger.Instance create(EntityPredicate predicate) {
-			return new SavePetTrigger.Instance(EntityPredicate.Composite.ANY, EntityPredicate.Composite.wrap(predicate));
+			return new SavePetTrigger.Instance(ContextAwarePredicate.ANY, EntityPredicate.wrap(predicate));
 		}
 
 		public boolean matches(LootContext lootcontext) {

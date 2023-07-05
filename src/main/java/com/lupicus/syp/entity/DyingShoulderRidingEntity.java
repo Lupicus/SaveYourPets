@@ -55,7 +55,7 @@ public abstract class DyingShoulderRidingEntity extends ShoulderRidingEntity imp
 			if (compound.contains("WoundedTicks"))
 				woundedTicks -= compound.getInt("WoundedTicks");
 			else
-				woundedTicks -= (int) (level.getGameTime() - woundedTime);
+				woundedTicks -= (int) (level().getGameTime() - woundedTime);
 			if (compound.hasUUID("sypKiller"))
 				killerUUID = compound.getUUID("sypKiller");
 			if (compound.hasUUID("sypScore"))
@@ -91,7 +91,7 @@ public abstract class DyingShoulderRidingEntity extends ShoulderRidingEntity imp
 		if (!isDying())
 		{
 			LivingEntity player = getOwner();
-			if (player instanceof ServerPlayer && level.getGameRules().getBoolean(GameRules.RULE_SHOWDEATHMESSAGES))
+			if (player instanceof ServerPlayer && level().getGameRules().getBoolean(GameRules.RULE_SHOWDEATHMESSAGES))
 			{
 				ResourceLocation res = EntityType.getKey(getType());
 				String type;
@@ -113,7 +113,7 @@ public abstract class DyingShoulderRidingEntity extends ShoulderRidingEntity imp
 			setNoGravity(false);
 			setYya(0.0F);
 			entityData.set(DATA_POSE, Pose.DYING);
-			woundedTime = level.getGameTime();
+			woundedTime = level().getGameTime();
 			woundedTicks = tickCount;
 			Entity entity = cause.getEntity();
 			if (entity instanceof ServerPlayer)
@@ -141,9 +141,9 @@ public abstract class DyingShoulderRidingEntity extends ShoulderRidingEntity imp
 			if (deathTime == 10)
 				reapplyPosition();
 		}
-		else if (!level.isClientSide)
+		else if (!level().isClientSide())
 		{
-			int time = (MyConfig.useWorldTicks) ? (int) (level.getGameTime() - woundedTime) : tickCount - woundedTicks;
+			int time = (MyConfig.useWorldTicks) ? (int) (level().getGameTime() - woundedTime) : tickCount - woundedTicks;
 			if (time < MyConfig.deathTimer)
 				return;
 			if (MyConfig.autoHeal)
@@ -161,12 +161,12 @@ public abstract class DyingShoulderRidingEntity extends ShoulderRidingEntity imp
 	{
 		if (scoreUUID != null)
 		{
-			lastHurtByPlayer = level.getPlayerByUUID(scoreUUID);
+			lastHurtByPlayer = level().getPlayerByUUID(scoreUUID);
 		}
 		DamageSource ds = damageSources().generic();
 		if (killerUUID != null)
 		{
-			Player aPlayer = level.getPlayerByUUID(killerUUID);
+			Player aPlayer = level().getPlayerByUUID(killerUUID);
 			if (aPlayer != null)
 				ds = damageSources().playerAttack(aPlayer);
 		}
@@ -208,7 +208,7 @@ public abstract class DyingShoulderRidingEntity extends ShoulderRidingEntity imp
 				ModTriggers.SAVE_PET.trigger((ServerPlayer) player, this);
 				cureEntity(item);
 			}
-			return InteractionResult.sidedSuccess(level.isClientSide);
+			return InteractionResult.sidedSuccess(level().isClientSide());
 		}
 		else if (item == Items.POISONOUS_POTATO)
 		{
@@ -220,20 +220,21 @@ public abstract class DyingShoulderRidingEntity extends ShoulderRidingEntity imp
 				killerUUID = player.getUUID();
 				killEntity();
 			}
-			return InteractionResult.sidedSuccess(level.isClientSide);
+			return InteractionResult.sidedSuccess(level().isClientSide());
 		}
 		return InteractionResult.PASS;
 	}
 
 	void cureEntity(Item item)
 	{
+		Level level = level();
 		if (level.isClientSide)
 		{
 			for (int i = 0; i < 7; ++i) {
 				double d0 = this.random.nextGaussian() * 0.02D;
 				double d1 = this.random.nextGaussian() * 0.02D;
 				double d2 = this.random.nextGaussian() * 0.02D;
-				this.level.addParticle(ParticleTypes.HEART, this.getRandomX(1.0D), this.getRandomY() + 0.5D,
+				level.addParticle(ParticleTypes.HEART, this.getRandomX(1.0D), this.getRandomY() + 0.5D,
 						this.getRandomZ(1.0D), d0, d1, d2);
 			}
 		}

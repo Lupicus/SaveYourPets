@@ -11,7 +11,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.event.CreativeModeTabEvent;
+import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -59,7 +59,7 @@ public class Main
 	    }
 
 	    @SubscribeEvent
-	    public static void onCreativeTab(CreativeModeTabEvent.BuildContents event)
+	    public static void onCreativeTab(BuildCreativeModeTabContentsEvent event)
 	    {
 	    	ModItems.setupTabs(event);
 	    }
@@ -71,7 +71,7 @@ public class Main
 		@SubscribeEvent
 		public static void onLoot(final LootTableLoadEvent event)
 		{
-			ModLoot.addLoot(event.getName(), event.getTable(), event.getLootTableManager());
+			ModLoot.addLoot(event.getName(), event.getTable());
 		}
 	}
 }

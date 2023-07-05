@@ -4,14 +4,13 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
-import net.minecraft.world.level.storage.loot.LootTables;
 import net.minecraft.world.level.storage.loot.entries.EmptyLootItem;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 
 public class ModLoot
 {
-	public static void addLoot(ResourceLocation res, LootTable lootTable, LootTables lootTableManager)
+	public static void addLoot(ResourceLocation res, LootTable lootTable)
 	{
 		if (res.equals(BuiltInLootTables.VILLAGE_SHEPHERD))
 		{

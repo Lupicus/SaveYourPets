@@ -3,7 +3,7 @@ package com.lupicus.syp.item;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Item.Properties;
-import net.minecraftforge.event.CreativeModeTabEvent;
+import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.registries.IForgeRegistry;
 
 public class ModItems
@@ -17,9 +17,9 @@ public class ModItems
 		forgeRegistry.register("golden_pet_bandage", GOLDEN_PET_BANDAGE);
 	}
 
-	public static void setupTabs(CreativeModeTabEvent.BuildContents event)
+	public static void setupTabs(BuildCreativeModeTabContentsEvent event)
 	{
-		if (event.getTab() == CreativeModeTabs.TOOLS_AND_UTILITIES)
+		if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES)
 		{
 			event.accept(PET_BANDAGE);
 			event.accept(GOLDEN_PET_BANDAGE);
