@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[47,)"
+loaderVersion="[48,)"
 license="MIT License"
 [[mods]]
 modId="syp"
@@ -13,12 +13,12 @@ description='''Save Your Pets Mod'''
 [[dependencies.syp]]
     modId="forge"
     mandatory=true
-    versionRange="[47,)"
+    versionRange="[48,)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.syp]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.20.1,1.21)"
+    versionRange="[1.20.2,1.21)"
     ordering="NONE"
     side="BOTH"

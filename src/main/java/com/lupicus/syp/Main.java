@@ -37,7 +37,9 @@ public class Main
 	@SubscribeEvent
 	public void setupCommon(final FMLCommonSetupEvent event)
 	{
-		ModTriggers.register();
+		event.enqueueWork(() -> {
+			ModTriggers.register();
+		});
 	}
 
 	@OnlyIn(Dist.CLIENT)

@@ -1,65 +1,61 @@
 package com.lupicus.syp.advancements.criterion;
 
-import com.google.gson.JsonObject;
-import com.lupicus.syp.Main;
+import java.util.Optional;
 
+import com.google.gson.JsonObject;
+import com.lupicus.syp.advancements.ModTriggers;
+
+import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.critereon.AbstractCriterionTriggerInstance;
 import net.minecraft.advancements.critereon.ContextAwarePredicate;
 import net.minecraft.advancements.critereon.DeserializationContext;
 import net.minecraft.advancements.critereon.EntityPredicate;
-import net.minecraft.advancements.critereon.SerializationContext;
 import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.level.storage.loot.LootContext;
 
 public class SavePetTrigger extends SimpleCriterionTrigger<SavePetTrigger.Instance>
 {
-	private static final ResourceLocation ID = new ResourceLocation(Main.MODID, "save_pet");
-
 	@Override
-	public ResourceLocation getId() {
-		return ID;
-	}
-
-	@Override
-	public SavePetTrigger.Instance createInstance(JsonObject json, ContextAwarePredicate predicate, DeserializationContext parser) {
-		ContextAwarePredicate entitypredicate = EntityPredicate.fromJson(json, "entity", parser);
-		return new SavePetTrigger.Instance(predicate, entitypredicate);
+	public SavePetTrigger.Instance createInstance(JsonObject json, Optional<ContextAwarePredicate> player, DeserializationContext ctx) {
+		Optional<ContextAwarePredicate> entitypredicate = EntityPredicate.fromJson(json, "entity", ctx);
+		return new SavePetTrigger.Instance(player, entitypredicate);
 	}
 
 	public void trigger(ServerPlayer player, Animal entity) {
 		LootContext lootcontext = EntityPredicate.createContext(player, entity);
-		this.trigger(player, (p_227251_1_) -> {
-			return p_227251_1_.matches(lootcontext);
+		this.trigger(player, (inst) -> {
+			return inst.matches(lootcontext);
 		});
 	}
 
 	public static class Instance extends AbstractCriterionTriggerInstance {
-		private final ContextAwarePredicate entity;
+		private final Optional<ContextAwarePredicate> entity;
 
-		public Instance(ContextAwarePredicate predicate, ContextAwarePredicate entity) {
-			super(SavePetTrigger.ID, predicate);
+		public Instance(Optional<ContextAwarePredicate> player, Optional<ContextAwarePredicate> entity) {
+			super(player);
 			this.entity = entity;
 		}
 
-		public static SavePetTrigger.Instance any() {
-			return new SavePetTrigger.Instance(ContextAwarePredicate.ANY, ContextAwarePredicate.ANY);
+		public static Criterion<SavePetTrigger.Instance> savePet() {
+			return ModTriggers.SAVE_PET.createCriterion(new SavePetTrigger.Instance(Optional.empty(), Optional.empty()));
 		}
 
-		public static SavePetTrigger.Instance create(EntityPredicate predicate) {
-			return new SavePetTrigger.Instance(ContextAwarePredicate.ANY, EntityPredicate.wrap(predicate));
+		public static Criterion<SavePetTrigger.Instance> savePet(EntityPredicate.Builder predicate) {
+			return ModTriggers.SAVE_PET.createCriterion(new SavePetTrigger.Instance(Optional.empty(), Optional.of(EntityPredicate.wrap(predicate))));
 		}
 
 		public boolean matches(LootContext lootcontext) {
-			return this.entity.matches(lootcontext);
+			return this.entity.isEmpty() || this.entity.get().matches(lootcontext);
 		}
 
 		@Override
-		public JsonObject serializeToJson(SerializationContext serializer) {
-			JsonObject jsonobject = super.serializeToJson(serializer);
-			jsonobject.add("entity", this.entity.toJson(serializer));
+		public JsonObject serializeToJson() {
+			JsonObject jsonobject = super.serializeToJson();
+			entity.ifPresent((c) -> {
+				jsonobject.add("entity", c.toJson());
+			});
 			return jsonobject;
 		}
 	}
