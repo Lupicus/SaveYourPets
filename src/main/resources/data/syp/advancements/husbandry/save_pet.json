@@ -2,7 +2,7 @@
   "parent": "minecraft:husbandry/tame_an_animal",
   "display": {
     "icon": {
-      "item": "syp:pet_bandage"
+      "id": "syp:pet_bandage"
     },
     "title": {
       "translate": "advancements.husbandry.syp.save_pet.title"

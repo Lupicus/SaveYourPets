@@ -10,6 +10,6 @@
     "W": { "tag": "minecraft:wool" }
   },
   "result": {
-    "item": "syp:pet_bandage"
+    "id": "syp:pet_bandage"
   }
 }

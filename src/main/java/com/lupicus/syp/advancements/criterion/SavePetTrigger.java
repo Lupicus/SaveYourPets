@@ -12,7 +12,6 @@ import net.minecraft.advancements.critereon.CriterionValidator;
 import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.level.storage.loot.LootContext;
 
@@ -32,7 +31,7 @@ public class SavePetTrigger extends SimpleCriterionTrigger<SavePetTrigger.Trigge
 
 	public static record TriggerInstance(Optional<ContextAwarePredicate> player, Optional<ContextAwarePredicate> entity) implements SimpleCriterionTrigger.SimpleInstance {
 		public static final Codec<SavePetTrigger.TriggerInstance> CODEC = RecordCodecBuilder.create((inst) -> {
-			return inst.group(ExtraCodecs.strictOptionalField(EntityPredicate.ADVANCEMENT_CODEC, "player").forGetter(SavePetTrigger.TriggerInstance::player), ExtraCodecs.strictOptionalField(EntityPredicate.ADVANCEMENT_CODEC, "entity").forGetter(SavePetTrigger.TriggerInstance::entity)).apply(inst, SavePetTrigger.TriggerInstance::new);
+			return inst.group(EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf("player").forGetter(SavePetTrigger.TriggerInstance::player), EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf("entity").forGetter(SavePetTrigger.TriggerInstance::entity)).apply(inst, SavePetTrigger.TriggerInstance::new);
 		});
 
 		public static Criterion<SavePetTrigger.TriggerInstance> savePet() {

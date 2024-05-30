@@ -2,7 +2,7 @@
   "parent": "syp:husbandry/save_pet",
   "display": {
     "icon": {
-      "item": "syp:golden_pet_bandage"
+      "id": "syp:golden_pet_bandage"
     },
     "title": {
       "translate": "advancements.husbandry.syp.save_all_pets.title"

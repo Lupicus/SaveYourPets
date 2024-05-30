@@ -15,7 +15,7 @@ function initializeCoreMod() {
     		},
     		'transformer': function(classNode) {
     			var count = 0
-    			var fn = asmapi.mapMethod('m_6096_') // interact
+    			var fn = "interact"
     			for (var i = 0; i < classNode.methods.size(); ++i) {
     				var obj = classNode.methods.get(i)
     				if (obj.name == fn) {
@@ -32,7 +32,7 @@ function initializeCoreMod() {
 }
 
 function fix_PII(obj) {
-	var fn = asmapi.mapMethod('m_6084_') // isAlive
+	var fn = "isAlive"
 	var node = asmapi.findFirstMethodCall(obj, asmapi.MethodType.VIRTUAL, "net/minecraft/world/entity/Mob", fn, "()Z")
 	if (node) {
 		var node2 = node.getNext()

@@ -266,8 +266,8 @@ public abstract class DyingEntity extends TamableAnimal implements IDying
 	{
 		double ang = (double) getYRot() * (Math.PI / 180.0);
 		EntityDimensions size = getDimensions(Pose.STANDING);
-		double width = size.width / 2.0;
-		double length = size.height / 2.0;
+		double width = size.width() / 2.0;
+		double length = size.height() / 2.0;
 		double lcos = length * Math.cos(ang);
 		double lsin = length * Math.sin(ang);
 		double x0 = getX();

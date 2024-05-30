@@ -12,7 +12,7 @@ public class ModLoot
 {
 	public static void addLoot(ResourceLocation res, LootTable lootTable)
 	{
-		if (res.equals(BuiltInLootTables.VILLAGE_SHEPHERD))
+		if (res.equals(BuiltInLootTables.VILLAGE_SHEPHERD.location()))
 		{
 			LootPool pool = LootPool.lootPool().name("pet_bandage")
 					.setRolls(ConstantValue.exactly(1.0f))

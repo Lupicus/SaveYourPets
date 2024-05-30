@@ -16,7 +16,7 @@ function initializeCoreMod() {
     		},
     		'transformer': function(classNode) {
     			var count = 0
-    			var fn = asmapi.mapMethod('m_6875_') // stillValid
+    			var fn = "stillValid"
     			for (var i = 0; i < classNode.methods.size(); ++i) {
     				var obj = classNode.methods.get(i)
     				if (obj.name == fn) {
@@ -33,10 +33,10 @@ function initializeCoreMod() {
 }
 
 function fix_CIW(obj) {
-	var fn = asmapi.mapMethod('m_6084_') // isAlive
+	var fn = "isAlive"
 	var node = asmapi.findFirstMethodCall(obj, asmapi.MethodType.VIRTUAL, "net/minecraft/world/entity/animal/horse/AbstractHorse", fn, "()Z")
 	if (node) {
-		var fld = asmapi.mapField('f_39654_') // horse
+		var fld = "horse"
 		var node2 = node.getNext()
 		var label2 = node2.label
 		var op10 = new LabelNode()
