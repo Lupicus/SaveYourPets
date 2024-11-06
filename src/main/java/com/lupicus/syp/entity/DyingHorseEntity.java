@@ -91,7 +91,7 @@ public abstract class DyingHorseEntity extends AbstractHorse implements IDying
 		if (!isDying())
 		{
 			LivingEntity player = getOwner();
-			if (player instanceof ServerPlayer && level().getGameRules().getBoolean(GameRules.RULE_SHOWDEATHMESSAGES))
+			if (player instanceof ServerPlayer sp && sp.serverLevel().getGameRules().getBoolean(GameRules.RULE_SHOWDEATHMESSAGES))
 			{
 				ResourceLocation res = EntityType.getKey(getType());
 				String type;
@@ -108,7 +108,7 @@ public abstract class DyingHorseEntity extends AbstractHorse implements IDying
 					msg.append(Component.literal(" ")).append(getCustomName());
 				if (MyConfig.showLoc)
 					msg.append(Component.literal(" " + formatLoc(position())));
-				player.sendSystemMessage(msg);
+				sp.sendSystemMessage(msg);
 			}
 			unRide();
 			entityData.set(DATA_POSE, Pose.DYING);
@@ -207,7 +207,7 @@ public abstract class DyingHorseEntity extends AbstractHorse implements IDying
 				ModTriggers.SAVE_PET.trigger((ServerPlayer) player, this);
 				cureEntity(item);
 			}
-			return InteractionResult.sidedSuccess(level().isClientSide());
+			return InteractionResult.SUCCESS;
 		}
 		else if (item == Items.POISONOUS_POTATO)
 		{
@@ -219,11 +219,11 @@ public abstract class DyingHorseEntity extends AbstractHorse implements IDying
 				killerUUID = player.getUUID();
 				killEntity();
 			}
-			return InteractionResult.sidedSuccess(level().isClientSide());
+			return InteractionResult.SUCCESS;
 		}
 		else if (player.isSecondaryUseActive()) {
 			openCustomInventoryScreen(player);
-			return InteractionResult.sidedSuccess(level().isClientSide());
+			return InteractionResult.SUCCESS;
 		}
 		return InteractionResult.PASS;
 	}

@@ -91,7 +91,7 @@ public abstract class DyingShoulderRidingEntity extends ShoulderRidingEntity imp
 		if (!isDying())
 		{
 			LivingEntity player = getOwner();
-			if (player instanceof ServerPlayer && level().getGameRules().getBoolean(GameRules.RULE_SHOWDEATHMESSAGES))
+			if (player instanceof ServerPlayer sp && sp.serverLevel().getGameRules().getBoolean(GameRules.RULE_SHOWDEATHMESSAGES))
 			{
 				ResourceLocation res = EntityType.getKey(getType());
 				String type;
@@ -108,7 +108,7 @@ public abstract class DyingShoulderRidingEntity extends ShoulderRidingEntity imp
 					msg.append(Component.literal(" ")).append(getCustomName());
 				if (MyConfig.showLoc)
 					msg.append(Component.literal(" " + formatLoc(position())));
-				player.sendSystemMessage(msg);
+				sp.sendSystemMessage(msg);
 			}
 			setNoGravity(false);
 			setYya(0.0F);
@@ -208,7 +208,7 @@ public abstract class DyingShoulderRidingEntity extends ShoulderRidingEntity imp
 				ModTriggers.SAVE_PET.trigger((ServerPlayer) player, this);
 				cureEntity(item);
 			}
-			return InteractionResult.sidedSuccess(level().isClientSide());
+			return InteractionResult.SUCCESS;
 		}
 		else if (item == Items.POISONOUS_POTATO)
 		{
@@ -220,7 +220,7 @@ public abstract class DyingShoulderRidingEntity extends ShoulderRidingEntity imp
 				killerUUID = player.getUUID();
 				killEntity();
 			}
-			return InteractionResult.sidedSuccess(level().isClientSide());
+			return InteractionResult.SUCCESS;
 		}
 		return InteractionResult.PASS;
 	}
