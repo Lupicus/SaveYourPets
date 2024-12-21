@@ -269,12 +269,12 @@ public abstract class DyingHorseEntity extends AbstractHorse implements IDying
 	}
 
 	@Override
-	protected AABB makeBoundingBox()
+	protected AABB makeBoundingBox(Vec3 pos)
 	{
-		return (deathTime >= 10) ? dyingBoundingBox() : super.makeBoundingBox();
+		return (deathTime >= 10) ? dyingBoundingBox(pos) : super.makeBoundingBox(pos);
 	}
 
-	private AABB dyingBoundingBox()
+	private AABB dyingBoundingBox(Vec3 pos)
 	{
 		double ang = (double) getYRot() * (Math.PI / 180.0);
 		EntityDimensions size = getDimensions(Pose.STANDING);
@@ -282,10 +282,10 @@ public abstract class DyingHorseEntity extends AbstractHorse implements IDying
 		double length = size.height() / 2.0;
 		double lcos = length * Math.cos(ang);
 		double lsin = length * Math.sin(ang);
-		double x0 = getX();
+		double x0 = pos.x;
 		double x1 = x0 + lcos;
-		double y0 = getY();
-		double z0 = getZ();
+		double y0 = pos.y;
+		double z0 = pos.z;
 		double z1 = z0 + lsin;
 		double hw = (width + length) / 2.0;
 		double xmin = x1 - hw;
