@@ -6,8 +6,8 @@
     "GGG"
   ],
   "key": {
-    "G": { "item": "minecraft:gold_nugget" },
-    "B": { "item": "syp:pet_bandage" }
+    "G": "minecraft:gold_nugget",
+    "B": "syp:pet_bandage"
   },
   "result": {
     "id": "syp:golden_pet_bandage"
