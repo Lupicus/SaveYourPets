@@ -7,6 +7,7 @@ import com.lupicus.syp.advancements.ModTriggers;
 import com.lupicus.syp.config.MyConfig;
 import com.lupicus.syp.item.ModItems;
 
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -21,6 +22,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Pose;
@@ -50,16 +52,14 @@ public abstract class DyingShoulderRidingEntity extends ShoulderRidingEntity imp
 		super.readAdditionalSaveData(compound);
 		if (compound.contains("WoundedTime"))
 		{
-			woundedTime = compound.getLong("WoundedTime");
+			woundedTime = compound.getLongOr("WoundedTime", 0L);
 			woundedTicks = tickCount;
 			if (compound.contains("WoundedTicks"))
-				woundedTicks -= compound.getInt("WoundedTicks");
+				woundedTicks -= compound.getIntOr("WoundedTicks", 0);
 			else
 				woundedTicks -= (int) (level().getGameTime() - woundedTime);
-			if (compound.hasUUID("sypKiller"))
-				killerUUID = compound.getUUID("sypKiller");
-			if (compound.hasUUID("sypScore"))
-				scoreUUID = compound.getUUID("sypScore");
+			killerUUID = compound.read("sypKiller", UUIDUtil.CODEC).orElse(null);
+			scoreUUID = compound.read("sypScore", UUIDUtil.CODEC).orElse(null);
 			entityData.set(DATA_POSE, Pose.DYING);
 			setHealth(0.0F);
 			deathTime = 20;
@@ -73,10 +73,8 @@ public abstract class DyingShoulderRidingEntity extends ShoulderRidingEntity imp
 		{
 			compound.putLong("WoundedTime", woundedTime);
 			compound.putInt("WoundedTicks", tickCount - woundedTicks);
-			if (killerUUID != null)
-				compound.putUUID("sypKiller", killerUUID);
-			if (scoreUUID != null)
-				compound.putUUID("sypScore", scoreUUID);
+			compound.storeNullable("sypKiller", UUIDUtil.CODEC, killerUUID);
+			compound.storeNullable("sypScore", UUIDUtil.CODEC, scoreUUID);
 		}
 	}
 
@@ -161,7 +159,7 @@ public abstract class DyingShoulderRidingEntity extends ShoulderRidingEntity imp
 	{
 		if (scoreUUID != null)
 		{
-			lastHurtByPlayer = level().getPlayerByUUID(scoreUUID);
+			lastHurtByPlayer = new EntityReference<>(scoreUUID);
 		}
 		DamageSource ds = damageSources().generic();
 		if (killerUUID != null)

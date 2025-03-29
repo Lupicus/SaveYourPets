@@ -5,7 +5,7 @@ function initializeCoreMod() {
     	'WolfEntity': {
     		'target': {
     			'type': 'CLASS',
-    			'name': 'net.minecraft.world.entity.animal.Wolf'
+    			'name': 'net.minecraft.world.entity.animal.wolf.Wolf'
     		},
     		'transformer': function(classNode) {
     			if (classNode.superName == "net/minecraft/world/entity/TamableAnimal") {

@@ -1,0 +1,16 @@
+{
+	"item.syp.pet_bandage": "Bandaż dla zwierząt",
+	"item.syp.golden_pet_bandage": "Złoty bandaż dla zwierząt",
+	"advancements.husbandry.syp.save_pet.title": "Zbawiciel zwierzaka",
+	"advancements.husbandry.syp.save_pet.description": "Uratuj zwierzaka przed śmiercią",
+	"advancements.husbandry.syp.save_all_pets.title": "Doktor",
+	"advancements.husbandry.syp.save_all_pets.description": "Oszczędzaj wszystkie rodzaje zwierząt przed śmiercią!",
+	"syp.pet_dying.wolf": "Twój wilk umiera!",
+	"syp.pet_dying.cat": "Twój kot umiera!",
+	"syp.pet_dying.horse": "Twój koń zwierząt umiera!",
+	"syp.pet_dying.donkey": "Twój osioł domowy umiera!",
+	"syp.pet_dying.mule": "Twój muł dla zwierząt umiera!",
+	"syp.pet_dying.llama": "Twoja lama dla zwierząt umiera!",
+	"syp.pet_dying.parrot": "Twoja papuga dla zwierząt umiera!",
+	"syp.pet_dying.generic": "Twój zwierzak umiera!"
+}
