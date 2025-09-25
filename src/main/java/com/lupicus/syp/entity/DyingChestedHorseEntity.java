@@ -1,5 +1,6 @@
 package com.lupicus.syp.entity;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import com.lupicus.syp.Main;
@@ -9,7 +10,6 @@ import com.lupicus.syp.item.ModItems;
 
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -33,6 +33,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
@@ -48,18 +50,20 @@ public abstract class DyingChestedHorseEntity extends AbstractChestedHorse imple
 	}
 
 	@Override
-	public void readAdditionalSaveData(CompoundTag compound) {
-		super.readAdditionalSaveData(compound);
-		if (compound.contains("WoundedTime"))
+	public void readAdditionalSaveData(ValueInput input) {
+		super.readAdditionalSaveData(input);
+		Optional<Long> optLong = input.getLong("WoundedTime");
+		if (optLong.isPresent())
 		{
-			woundedTime = compound.getLongOr("WoundedTime", 0L);
+			woundedTime = optLong.get();
 			woundedTicks = tickCount;
-			if (compound.contains("WoundedTicks"))
-				woundedTicks -= compound.getIntOr("WoundedTicks", 0);
+			Optional<Integer> optInt = input.getInt("WoundedTicks");
+			if (optInt.isPresent())
+				woundedTicks -= optInt.get();
 			else
 				woundedTicks -= (int) (level().getGameTime() - woundedTime);
-			killerUUID = compound.read("sypKiller", UUIDUtil.CODEC).orElse(null);
-			scoreUUID = compound.read("sypScore", UUIDUtil.CODEC).orElse(null);
+			killerUUID = input.read("sypKiller", UUIDUtil.CODEC).orElse(null);
+			scoreUUID = input.read("sypScore", UUIDUtil.CODEC).orElse(null);
 			entityData.set(DATA_POSE, Pose.DYING);
 			setHealth(0.0F);
 			deathTime = 20;
@@ -67,14 +71,14 @@ public abstract class DyingChestedHorseEntity extends AbstractChestedHorse imple
 	}
 
 	@Override
-	public void addAdditionalSaveData(CompoundTag compound) { // write
-		super.addAdditionalSaveData(compound);
+	public void addAdditionalSaveData(ValueOutput output) { // write
+		super.addAdditionalSaveData(output);
 		if (isDying())
 		{
-			compound.putLong("WoundedTime", woundedTime);
-			compound.putInt("WoundedTicks", tickCount - woundedTicks);
-			compound.storeNullable("sypKiller", UUIDUtil.CODEC, killerUUID);
-			compound.storeNullable("sypScore", UUIDUtil.CODEC, scoreUUID);
+			output.putLong("WoundedTime", woundedTime);
+			output.putInt("WoundedTicks", tickCount - woundedTicks);
+			output.storeNullable("sypKiller", UUIDUtil.CODEC, killerUUID);
+			output.storeNullable("sypScore", UUIDUtil.CODEC, scoreUUID);
 		}
 	}
 
@@ -89,7 +93,7 @@ public abstract class DyingChestedHorseEntity extends AbstractChestedHorse imple
 		if (!isDying())
 		{
 			LivingEntity player = getOwner();
-			if (player instanceof ServerPlayer sp && sp.serverLevel().getGameRules().getBoolean(GameRules.RULE_SHOWDEATHMESSAGES))
+			if (player instanceof ServerPlayer sp && sp.level().getGameRules().getBoolean(GameRules.RULE_SHOWDEATHMESSAGES))
 			{
 				ResourceLocation res = EntityType.getKey(getType());
 				String type;
