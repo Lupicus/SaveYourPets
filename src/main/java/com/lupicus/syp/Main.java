@@ -14,6 +14,7 @@ import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.eventbus.api.listener.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -29,7 +30,7 @@ public class Main
 		context.registerConfig(ModConfig.Type.COMMON, MyConfig.COMMON_SPEC);
 	}
 
-	@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
+	@Mod.EventBusSubscriber(bus = Bus.MOD)
 	public static class ModEvents
 	{
 		@SubscribeEvent
@@ -42,21 +43,21 @@ public class Main
 			else if (key.equals(Registries.TRIGGER_TYPE))
 				ModTriggers.register();
 		}
-
-		@SubscribeEvent
-		public static void onCreativeTab(BuildCreativeModeTabContentsEvent event)
-		{
-			ModItems.setupTabs(event);
-		}
 	}
 
-	@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE)
+	@Mod.EventBusSubscriber(bus = Bus.FORGE)
 	public static class ForgeEvents
 	{
 		@SubscribeEvent
 		public static void onLoot(final LootTableLoadEvent event)
 		{
 			ModLoot.addLoot(event.getName(), event.getTable());
+		}
+
+		@SubscribeEvent
+		public static void onCreativeTab(BuildCreativeModeTabContentsEvent event)
+		{
+			ModItems.setupTabs(event);
 		}
 	}
 }

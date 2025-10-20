@@ -161,7 +161,7 @@ public abstract class DyingEntity extends TamableAnimal implements IDying
 	{
 		if (scoreUUID != null)
 		{
-			lastHurtByPlayer = new EntityReference<>(scoreUUID);
+			lastHurtByPlayer = EntityReference.of(scoreUUID);
 		}
 		DamageSource ds = damageSources().generic();
 		if (killerUUID != null)
@@ -228,7 +228,7 @@ public abstract class DyingEntity extends TamableAnimal implements IDying
 	void cureEntity(Item item)
 	{
 		Level level = level();
-		if (level.isClientSide)
+		if (level.isClientSide())
 		{
 			for (int i = 0; i < 7; ++i) {
 				double d0 = this.random.nextGaussian() * 0.02D;
@@ -246,7 +246,7 @@ public abstract class DyingEntity extends TamableAnimal implements IDying
 		scoreUUID = null;
 		setHealth(1.0F);
 		deathTime = 0;
-		if (!level.isClientSide && isInWall())
+		if (!level.isClientSide() && isInWall())
 		{
 			setPos(Math.floor(getX()) + 0.5, getY(), Math.floor(getZ()) + 0.5);
 			if (isInWall())
